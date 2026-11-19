@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# Secrets and local settings: never commit these
+.env
+.env.*
+!.env.example
+metabase_config.json
+*.pem
+*.key
+
+# Data that must stay out of GitHub (learner emails, sales names, large files)
+Database/
+*.xlsx
+*.xls
+*.pkl
+*.pdf
+Data_Source/
+data/*.csv
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+output/crm_evaluated_master.csv
+
+# CSV files are ignored by default, except the two precomputed refund-history files the app reads at run time
+*.csv
+!output/learner_outcomes.csv
+!output/empirical_persona_matrix.csv
+!data/.gitkeep
+
+# Logs, editor and OS files
+*.log
+.DS_Store
+.vscode/
+.idea/
+.tempmediaStorage/
+.system_generated/
+scratch/

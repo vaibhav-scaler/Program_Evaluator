@@ -1,0 +1,2914 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Sales Intelligence Desk | Scaler</title>
+  <link rel="icon" type="image/png" href="scaler_logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+/* ==========================================================================
+   Sales Intelligence Desk
+   Flat, document-like interface. One accent colour. Colour is reserved for meaning
+   (good / caution / bad), never for decoration.
+   ========================================================================== */
+
+:root {
+  --font: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --bg: #f4f5f7;
+  --panel: #ffffff;
+  --ink: #12161c;
+  --ink-2: #353d49;
+  --ink-3: #65707d;
+  --ink-4: #98a1ad;
+  --line: #d6dbe2;
+  --line-soft: #e8ebf0;
+  --hover: #f0f2f5;
+
+  --accent: #1f4bd8;
+  --accent-hover: #1839ad;
+  --accent-soft: #eaf0fd;
+  --navy: #0b2a6f;
+  --navy-2: #12388f;
+  --teal: #0f766e;
+  --teal-soft: #e8f4f2;
+
+  --good: #12703a;
+  --caution: #8a5a00;
+  --bad: #b3261e;
+
+  --radius: 4px;
+  --topbar-h: 52px;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, p, dl, dd, ul { margin: 0; padding: 0; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+b, strong { font-weight: 600; color: var(--ink); }
+code { font-family: var(--mono); font-size: 12px; background: var(--hover); padding: 1px 5px; border-radius: 3px; }
+
+/* thin scrollbars */
+* { scrollbar-width: thin; scrollbar-color: #c3cad3 transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: #c3cad3; border-radius: 6px; border: 2px solid transparent; background-clip: content-box; }
+
+/* ---------- Buttons ---------- */
+.btn-sm,
+.btn-catalogue,
+.nav-filter-reset,
+.modal-close-btn,
+.modal-nav-arrow-btn,
+.filter-tab,
+.faq-prog-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  white-space: nowrap;
+  transition: background .12s, border-color .12s, color .12s;
+}
+.btn-sm:hover:not(:disabled),
+.btn-catalogue:hover,
+.modal-close-btn:hover,
+.modal-nav-arrow-btn:hover:not(:disabled),
+.filter-tab:hover,
+.faq-prog-btn:hover { background: var(--hover); border-color: #bcc4ce; text-decoration: none; }
+.btn-sm:disabled, .modal-nav-arrow-btn:disabled { color: var(--ink-4); background: var(--panel); border-color: var(--line-soft); }
+
+.btn-sm.primary,
+.btn-primary {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.btn-sm.primary:hover:not(:disabled), .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn-sm.primary:disabled { background: #8fa6ea; border-color: #8fa6ea; color: #fff; }
+
+.nav-filter-reset { color: var(--ink-3); border-color: transparent; background: transparent; padding: 0 8px; }
+.nav-filter-reset:hover { color: var(--ink); background: var(--hover); border-color: transparent; }
+
+.filter-tab.active, .faq-prog-btn.active { color: var(--accent); background: var(--accent-soft); border-color: #b9c9f5; }
+.btn-catalogue { height: 28px; font-size: 12px; padding: 0 10px; color: var(--accent); }
+
+/* ---------- Top bar ---------- */
+.topbar { flex: none; background: var(--panel); border-bottom: 1px solid var(--line); }
+.topbar-row { display: flex; align-items: center; gap: 20px; height: var(--topbar-h); padding: 0 20px; }
+.topbar-spacer { flex: 1; }
+
+.brand-logo { display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none !important; }
+.brand-scaler-logo { height: 18px; width: auto; display: block; }
+.brand-divider { width: 1px; height: 18px; background: var(--line); }
+.brand-title { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: .005em; white-space: nowrap; }
+
+.nav-history-controls { align-items: stretch; gap: 2px; height: var(--topbar-h); }
+.nav-arrow-btn {
+  display: inline-flex; align-items: center;
+  padding: 0 14px; height: 100%;
+  font-size: 13px; font-weight: 500; color: var(--ink-3); white-space: nowrap;
+  background: none; border: 0; border-bottom: 2px solid transparent; border-radius: 0;
+}
+.nav-arrow-btn:hover:not(:disabled) { color: var(--ink); }
+.nav-arrow-btn:disabled { color: var(--ink); border-bottom-color: var(--accent); }
+
+.nav-actions { display: flex; align-items: center; gap: 8px; }
+.nav-search {
+  display: flex; align-items: center; width: 320px; height: 32px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+}
+.nav-search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.nav-search input { flex: 1; min-width: 0; height: 100%; padding: 0 10px; border: 0; outline: 0; background: transparent; font-size: 13px; }
+.nav-search input::placeholder { color: var(--ink-4); }
+.nav-search button { height: 100%; padding: 0 12px; font-size: 13px; font-weight: 500; color: var(--accent); background: none; border: 0; border-left: 1px solid var(--line-soft); }
+.nav-search button:hover { background: var(--hover); }
+
+/* ---------- Filter bar ---------- */
+.nav-filter-strip { align-items: center; gap: 12px; padding: 10px 20px; border-top: 1px solid var(--line-soft); background: var(--panel); }
+.nav-filter-label { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.nav-filters-grid { display: flex; flex: 1; align-items: center; gap: 8px; min-width: 0; }
+.nav-filter-input, .nav-filter-select {
+  height: 32px; padding: 0 10px; font-size: 13px; color: var(--ink);
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); outline: 0; min-width: 0;
+}
+.nav-filter-input { flex: 1.6; }
+.nav-filter-select {
+  flex: 1; appearance: none; -webkit-appearance: none; padding-right: 28px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2365707d' stroke-width='1.4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+}
+.nav-filter-input:focus, .nav-filter-select:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+/* ---------- Page frame ---------- */
+.app-container { flex: 1; min-height: 0; position: relative; }
+.tab-view { height: 100%; overflow: auto; }
+.page { width: 100%; padding: 24px 32px 40px; }
+
+
+.field-row { display: flex; gap: 8px; }
+.input { flex: 1; min-width: 0; height: 36px; padding: 0 12px; font-size: 13px; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); outline: 0; }
+.input::placeholder { color: var(--ink-4); }
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.field-row .btn-sm { height: 36px; }
+
+.msg { margin-top: 10px; font-size: 12.5px; }
+.msg.error { color: var(--bad); }
+.msg.info { color: var(--ink-3); }
+.msg.ok { color: var(--good); }
+.msg-sub { display: block; margin-top: 2px; color: var(--ink-3); font-size: 12px; }
+.rec-history { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line-soft); font-size: 12.5px; line-height: 1.55; color: var(--ink-3); }
+.rec-history .rec-history-title { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-4); margin-bottom: 4px; }
+.rec-history div.l { margin-top: 3px; }
+.rec-history .ra-block { margin-top: 12px; }
+.rec-history .ra-sub { font-size: 12px; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; }
+.rec-history .ra-sub small { font-weight: 400; color: var(--ink-4); margin-left: 6px; }
+.ra-row { display: grid; grid-template-columns: 138px 1fr 46px; gap: 8px; align-items: center; margin: 4px 0; font-size: 12px; color: var(--ink-3); }
+.ra-row .ra-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ra-row .ra-label em { font-style: normal; color: var(--ink-4); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.ra-row.cur .ra-label, .ra-row.cur .ra-val { color: var(--ink); font-weight: 600; }
+.ra-track { position: relative; height: 9px; background: var(--line-soft); border-radius: 2px; }
+.ra-fill { height: 100%; background: #c3cad5; border-radius: 2px; }
+.ra-row.cur .ra-fill { background: var(--accent); }
+.ra-avg { position: absolute; top: -3px; bottom: -3px; width: 0; border-left: 1px dashed var(--ink-3); }
+.ra-val { text-align: right; font-variant-numeric: tabular-nums; }
+.ra-legend { margin-top: 4px; font-size: 11px; color: var(--ink-4); }
+.ra-waffle { display: grid; grid-template-columns: repeat(20, 1fr); gap: 2px; margin: 2px 0 6px; }
+.ra-waffle i { display: block; height: 11px; background: var(--line-soft); border-radius: 1px; }
+.ra-waffle i.r { background: var(--bad); opacity: .85; }
+.ra-cap { font-size: 12px; color: var(--ink-2); }
+.ra-cap small { display: block; color: var(--ink-4); font-size: 11px; margin-top: 1px; }
+
+
+#file-upload-input { display: none; }
+
+
+
+.notice { margin-top: 12px; padding: 10px 14px; font-size: 12.5px; color: var(--ink-2); background: #fffaf0; border: 1px solid #ecd9a8; border-left: 3px solid #c99a2e; border-radius: var(--radius); }
+.notice-title { font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+.notice ul { padding-left: 18px; }
+
+
+/* ---------- Home ---------- */
+.hero-band { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 20px 32px; color: #fff; background: var(--navy); }
+.hero-copy h1 { font-size: 20px; line-height: 1.3; font-weight: 600; letter-spacing: -.005em; color: #fff; }
+.hero-copy p { margin-top: 2px; max-width: 980px; color: #b6c4e6; font-size: 13.5px; }
+
+.home-grid { display: grid; grid-template-columns: 248px minmax(0, 1fr); gap: 24px; align-items: start; }
+.menu-tabs { display: flex; flex-direction: column; gap: 4px; }
+.menu-tab { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; padding: 12px 16px; text-align: left; color: var(--ink-3); background: transparent; border: 1px solid transparent; border-left: 3px solid transparent; border-radius: var(--radius); }
+.menu-tab:hover:not(.active) { background: #e8ebf0; }
+.menu-tab-title { font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.menu-tab-sub { font-size: 12.5px; color: var(--ink-3); }
+.menu-tab.active { background: var(--panel); border-color: var(--line); border-left-color: var(--accent); }
+.menu-tab.active .menu-tab-title { color: var(--ink); }
+
+.content-card { min-height: 0; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+.menu-panel { padding: 28px 32px 32px; }
+.panel-title { margin-bottom: 24px; }
+.panel-title h2 { font-size: 18px; line-height: 1.3; font-weight: 600; color: var(--ink); }
+.panel-title p { margin-top: 2px; color: var(--ink-3); }
+.action-label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+.field-row-lg { max-width: 780px; }
+.field-row-lg .input, .field-row-lg .btn-sm { height: 40px; }
+.field-row-lg .input { font-size: 14px; }
+.field-row-lg .btn-sm { padding: 0 18px; }
+
+.dropzone-box { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 240px; padding: 32px; text-align: center; background: #fafbfc; border: 1.5px dashed #b4bcc7; border-radius: var(--radius); }
+.dropzone-box.is-dragover { background: var(--accent-soft); border-color: var(--accent); }
+.dropzone-title { font-size: 15px; font-weight: 600; color: var(--ink); }
+.dropzone-sub { margin: 4px 0 16px; color: var(--ink-3); }
+.dropzone-box .notice { align-self: stretch; text-align: left; margin: 4px 0 16px; }
+
+
+/* ---------- Evaluation progress ---------- */
+.eval-progress-container { display: none; margin-top: 20px; padding: 16px 18px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+.eval-progress-header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.eval-progress-title { font-weight: 500; color: var(--ink); }
+.eval-progress-pct { font-family: var(--mono); font-size: 12.5px; color: var(--ink-3); }
+.eval-progress-pct.success { color: var(--ink); }
+.eval-pulse-dot { display: none; }
+.eval-progress-bar-bg { height: 4px; margin: 12px 0 14px; background: var(--line-soft); border-radius: 2px; overflow: hidden; }
+.eval-progress-fill { height: 100%; width: 0; background: var(--accent); transition: width .25s ease; }
+.eval-stages-stepper { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.eval-stage-item { padding-top: 8px; border-top: 2px solid var(--line-soft); color: var(--ink-4); }
+.eval-stage-item.active { border-top-color: var(--accent); color: var(--ink); }
+.eval-stage-item.completed { border-top-color: var(--accent); color: var(--ink-2); }
+.eval-stage-badge { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.eval-stage-badge span { display: none; }
+.eval-stage-title { font-size: 12.5px; margin-top: 1px; }
+
+/* ---------- Results table ---------- */
+#view-analysis { overflow: hidden; }
+.table-card { height: 100%; display: flex; flex-direction: column; background: var(--panel); }
+.table-top-bar { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--line); }
+.table-count-label { font-size: 15px; font-weight: 600; color: var(--ink); }
+.table-count-label .count { margin-left: 8px; font-size: 13px; font-weight: 400; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.table-top-actions { display: flex; align-items: center; gap: 14px; }
+
+.table-wrapper { flex: 1; min-height: 0; overflow: auto; }
+table { width: 100%; border-collapse: collapse; }
+#leads-table thead th {
+  position: sticky; top: 0; z-index: 2;
+  padding: 9px 16px; text-align: left; white-space: nowrap;
+  font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3);
+  background: #fafbfc; border-bottom: 1px solid var(--line);
+}
+#leads-table tbody td { padding: 12px 16px; vertical-align: top; border-bottom: 1px solid var(--line-soft); }
+#leads-table tbody tr { cursor: pointer; }
+#leads-table tbody tr:hover { background: var(--hover); }
+#leads-table .col-action { text-align: right; width: 1%; }
+.empty-row td { padding: 48px 16px !important; text-align: center; color: var(--ink-3); cursor: default; }
+
+.cell-main { font-weight: 500; color: var(--ink); line-height: 1.35; }
+.cell-sub { margin-top: 2px; font-size: 12px; color: var(--ink-3); line-height: 1.4; }
+.cell-sub .k { color: var(--ink-4); }
+.cell-sub .warn { color: var(--caution); }
+.cell-flag { margin-top: 3px; font-size: 12px; font-weight: 500; color: var(--bad); }
+.cell-id { font-family: var(--mono); font-size: 12px; color: var(--ink-2); white-space: nowrap; }
+.source-tag { display: inline-block; margin-top: 2px; font-size: 11px; color: var(--ink-3); border: 1px solid var(--line); border-radius: 3px; padding: 0 5px; }
+
+.metric { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink); line-height: 1.2; }
+.metric-sub { margin-top: 3px; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.tone-good { color: var(--good); }
+.tone-caution { color: var(--caution); }
+.tone-bad { color: var(--bad); }
+
+.btn-action-view { height: 28px; padding: 0 12px; font-size: 12.5px; font-weight: 500; color: var(--accent); background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+.btn-action-view:hover { background: var(--accent-soft); border-color: #b9c9f5; }
+
+.pagination-bar { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 20px; border-top: 1px solid var(--line); background: var(--panel); color: var(--ink-3); }
+.pagination-bar > div { display: flex; align-items: center; gap: 12px; }
+.pagination-controls { display: flex; align-items: center; gap: 10px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.pagination-bar .btn-sm { height: 28px; }
+
+/* ---------- Dossier sheet ---------- */
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 50; background: var(--bg); }
+.modal-overlay.active { display: block; }
+.modal-container { height: 100%; display: flex; flex-direction: column; }
+
+.sheet-head { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; min-height: 60px; background: var(--panel); border-bottom: 1px solid var(--line); }
+.sheet-title { display: flex; align-items: baseline; gap: 14px; min-width: 0; flex-wrap: wrap; padding: 10px 0; }
+.candidate-name { font-size: 18px; font-weight: 600; color: var(--ink); letter-spacing: -.005em; }
+.id-tag { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.candidate-academic-badge { font-size: 12.5px; font-weight: 500; color: var(--ink-3); }
+.candidate-academic-badge[data-tone="good"] { color: var(--good); }
+.candidate-academic-badge[data-tone="bad"] { color: var(--bad); }
+.sheet-actions { display: flex; align-items: center; gap: 8px; flex: none; }
+.modal-candidate-nav { display: flex; align-items: center; gap: 6px; }
+#modal-candidate-counter { min-width: 72px; text-align: center; font-size: 12.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.modal-nav-arrow-btn { height: 30px; padding: 0 10px; }
+.modal-close-btn { height: 30px; }
+
+.modal-body { flex: 1; min-height: 0; overflow: auto; padding: 24px; }
+.sheet-inner { width: 100%; }
+
+.profile-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+.dossier-tile { padding: 12px 16px; border-right: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); min-width: 0; }
+.dossier-tile:nth-child(5n) { border-right: 0; }
+.dossier-tile:nth-last-child(-n+5) { border-bottom: 0; }
+.dossier-tile-label { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 3px; }
+.dossier-tile-val { color: var(--ink); line-height: 1.4; overflow-wrap: anywhere; }
+.dossier-tile-val .v { font-weight: 500; color: var(--ink); }
+.dossier-tile-val .s { margin-top: 1px; font-size: 12px; color: var(--ink-3); }
+.dossier-tile-val .s.warn { color: var(--caution); }
+.dossier-tile-val.tone-good .v { color: var(--good); }
+.dossier-tile-val.tone-caution .v { color: var(--caution); }
+
+.rec-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; margin-top: 24px; align-items: start; }
+.rec-box { background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--line); border-radius: var(--radius); padding: 18px 20px 20px; }
+.rec-box.primary-rec { border-top-color: var(--accent); }
+.rec-box-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+.rec-badge-pill { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.rec-badge-pill.pill-primary { color: var(--accent); }
+.rec-confidence { font-size: 12.5px; font-weight: 500; color: var(--ink-3); }
+.rec-confidence[data-tone="good"] { color: var(--good); }
+.rec-confidence[data-tone="caution"] { color: var(--caution); }
+.rec-confidence[data-tone="bad"] { color: var(--bad); }
+.rec-program-name { font-size: 18px; line-height: 1.3; font-weight: 600; color: var(--ink); }
+.rec-track-name { margin-top: 2px; color: var(--ink-3); }
+.rec-stats { display: flex; gap: 28px; margin: 14px 0 2px; padding: 10px 0; border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
+.rec-stat-label { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.rec-stat-val { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink); }
+.rec-why-box { margin-top: 14px; color: var(--ink-2); line-height: 1.65; }
+.rec-also { margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line); color: var(--ink-2); }
+.rec-also-label { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 4px; }
+.rec-also-prog { font-weight: 600; color: var(--ink); }
+.rec-also-note { margin-top: 2px; font-size: 13px; color: var(--ink-3); }
+.rec-why-box b { color: var(--ink); }
+
+.rec-career-box { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line-soft); }
+.rec-career-header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+.rec-career-title { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.rec-career-salary-tag { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+.rec-career-roles { display: flex; flex-wrap: wrap; gap: 6px; }
+.career-role-pill, .company-pill { padding: 2px 9px; font-size: 12px; color: var(--ink-2); background: var(--panel); border: 1px solid var(--line); border-radius: 3px; }
+.rec-career-desc { margin-top: 10px; color: var(--ink-3); font-size: 12.5px; line-height: 1.55; }
+.rec-links { margin-top: 14px; }
+
+/* ---------- Curriculum, comparison, FAQ ---------- */
+.section { margin-top: 32px; }
+.section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+.section-title { font-size: 15px; font-weight: 600; color: var(--ink); }
+.section-sub { margin-top: 2px; color: var(--ink-3); font-size: 12.5px; }
+.section-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.curriculum-module-list { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+.curriculum-module-card { padding: 11px 16px; border-bottom: 1px solid var(--line-soft); }
+.curriculum-module-card:last-child { border-bottom: 0; }
+.curriculum-phase-title { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.curriculum-phase-title .phase { font-weight: 500; color: var(--ink); }
+.curriculum-duration-tag { font-size: 12px; color: var(--ink-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tag { display: inline-block; margin-right: 6px; padding: 0 6px; font-size: 11px; font-weight: 500; color: var(--ink-3); border: 1px solid var(--line); border-radius: 3px; }
+.empty-note { padding: 16px; color: var(--ink-3); }
+
+.company-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.subsection { margin-top: 16px; padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+.subsection-title { margin-bottom: 8px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+
+.market-comparison-section, .strategic-faq-section { margin-top: 32px; }
+.market-comp-header, .strategic-faq-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+.market-comp-title, .strategic-faq-title { font-size: 15px; font-weight: 600; color: var(--ink); }
+.market-comp-title span span, .strategic-faq-title span span { font-weight: 600; color: var(--ink); }
+.market-comp-sub, .strategic-faq-sub { margin-top: 2px; max-width: 820px; color: var(--ink-3); font-size: 12.5px; }
+.market-comp-table-wrapper { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: auto; }
+.market-comp-table th { padding: 9px 16px; text-align: left; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); background: #fafbfc; border-bottom: 1px solid var(--line); }
+.market-comp-table td { padding: 12px 16px; vertical-align: top; border-bottom: 1px solid var(--line-soft); line-height: 1.55; }
+.market-comp-table tr:last-child td { border-bottom: 0; }
+.market-comp-table .col-dim, .market-comp-table .dim-cell { width: 18%; font-weight: 500; color: var(--ink); }
+.comp-badge-scaler, .comp-badge-market { margin-bottom: 3px; font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+.comp-badge-scaler { color: var(--accent); }
+
+.strategic-faq-selector { display: flex; gap: 8px; flex-wrap: wrap; }
+.faq-accordion-list { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+.faq-item-card { border-bottom: 1px solid var(--line-soft); }
+.faq-item-card:last-child { border-bottom: 0; }
+.faq-question-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; text-align: left; font-weight: 500; color: var(--ink); background: none; border: 0; }
+.faq-question-btn:hover { background: var(--hover); }
+.faq-q-left { display: flex; align-items: baseline; gap: 12px; }
+.faq-q-badge { font-family: var(--mono); font-size: 12px; color: var(--ink-4); }
+.faq-toggle-icon { flex: none; width: 8px; height: 8px; border-right: 1.5px solid var(--ink-3); border-bottom: 1.5px solid var(--ink-3); transform: rotate(45deg); transition: transform .15s; margin-right: 4px; }
+.faq-item-card.open .faq-toggle-icon { transform: rotate(-135deg); }
+.faq-answer-body { display: none; padding: 2px 16px 16px 46px; color: var(--ink-2); line-height: 1.65; }
+.faq-item-card.open .faq-answer-body { display: block; }
+.faq-answer-body ul, .faq-answer-body ol { padding-left: 18px; margin: 6px 0; }
+.faq-answer-body li { margin: 3px 0; }
+.faq-highlight { font-weight: 600; color: var(--ink); }
+
+/* ---------- Factor bars (confidence breakdown) ---------- */
+.factor-bar-row { margin-bottom: 10px; }
+.factor-bar-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-3); margin-bottom: 3px; }
+.factor-bar-track { height: 4px; background: var(--line-soft); border-radius: 2px; }
+.factor-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; }
+
+/* ---------- Misc ---------- */
+.live-search-spinner { display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -2px; border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.crm-source-badge { font-size: 11px; color: var(--ink-3); border: 1px solid var(--line); border-radius: 3px; padding: 0 5px; }
+
+.toast-region { position: fixed; right: 20px; bottom: 20px; z-index: 100; display: flex; flex-direction: column; gap: 8px; max-width: 420px; }
+.toast { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; background: var(--ink); color: #fff; border-radius: var(--radius); box-shadow: 0 6px 20px rgba(16, 22, 28, .25); white-space: pre-line; line-height: 1.45; }
+.toast.error { background: #7f1d17; }
+.toast button { flex: none; background: none; border: 0; color: #fff; opacity: .7; font-size: 12px; padding: 0; text-decoration: underline; }
+.toast button:hover { opacity: 1; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1180px) {
+  .topbar-row { flex-wrap: wrap; height: auto; padding: 8px 20px; gap: 8px 20px; }
+  .topbar-spacer { display: none; }
+  .nav-actions { margin-left: auto; }
+  .nav-history-controls { height: 36px; }
+  .profile-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dossier-tile:nth-child(5n) { border-right: 1px solid var(--line-soft); }
+  .dossier-tile:nth-child(3n) { border-right: 0; }
+  .dossier-tile:nth-last-child(-n+5) { border-bottom: 1px solid var(--line-soft); }
+  .dossier-tile:nth-last-child(-n+1) { border-bottom: 0; }
+  .nav-search { width: 240px; }
+}
+@media (max-width: 960px) {
+  .hero-band { flex-direction: column; align-items: flex-start; padding: 22px 16px; gap: 16px; }
+  .home-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .menu-tabs { flex-direction: row; }
+  .menu-tab { flex: 1; padding: 10px 14px; border-left-width: 1px; border-bottom: 3px solid transparent; }
+  .menu-tab.active { border-bottom-color: var(--accent); border-left-color: var(--line); }
+  .menu-tab-sub { display: none; }
+  .menu-panel { padding: 20px 16px 24px; }
+  .rec-grid { grid-template-columns: minmax(0, 1fr); }
+  .topbar-row { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 10px; }
+  .nav-history-controls { height: 36px; }
+  .nav-actions { flex-wrap: wrap; width: 100%; }
+  .nav-search { flex: 1; width: auto; min-width: 180px; }
+  .nav-filters-grid { flex-wrap: wrap; }
+  .nav-filter-input, .nav-filter-select { flex: 1 1 160px; }
+  .nav-filter-strip { flex-wrap: wrap; padding: 10px 16px; }
+  .page { padding: 20px 16px 32px; }
+  .eval-stages-stepper { grid-template-columns: repeat(2, 1fr); }
+  .profile-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dossier-tile:nth-child(3n) { border-right: 1px solid var(--line-soft); }
+  .dossier-tile:nth-child(2n) { border-right: 0; }
+  .dossier-tile:nth-last-child(-n+1) { border-bottom: 0; }
+  .sheet-head { padding: 8px 16px; flex-wrap: wrap; }
+  .modal-body { padding: 16px; }
+}
+
+/* ---------- Additions ---------- */
+.candidate-academic-badge[data-tone="caution"] { color: var(--caution); }
+.btn-sm.primary .live-search-spinner { border-color: rgba(255, 255, 255, .4); border-top-color: #fff; }
+.rec-stat-note { font-size: 11px; color: var(--caution); }
+.rec-stat-val.tone-good { color: var(--good); }
+.rec-stat-val.tone-caution { color: var(--caution); }
+.rec-stat-val.tone-bad { color: var(--bad); }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- Top bar -->
+  <nav class="topbar">
+    <div class="topbar-row">
+      <a href="#" class="brand-logo" onclick="showUploadView(); return false;">
+        <img src="scaler_logo.png" alt="Scaler" class="brand-scaler-logo">
+        <span class="brand-divider"></span>
+        <span class="brand-title">Sales Intelligence Desk</span>
+      </a>
+
+      <div id="nav-history-controls" class="nav-history-controls" style="display: none;">
+        <button id="nav-btn-back" class="nav-arrow-btn" onclick="navigateView('back')">Evaluate</button>
+        <button id="nav-btn-forward" class="nav-arrow-btn" onclick="navigateView('forward')">Results</button>
+      </div>
+
+      <div class="topbar-spacer"></div>
+
+      <div class="nav-actions">
+        <div class="nav-search" id="nav-search-box" style="display: none;">
+          <input type="text" id="nav-crm-search-input" placeholder="Email, phone or name"
+            onkeydown="if(event.key === 'Enter') executeCrmLookup()">
+          <button type="button" onclick="executeCrmLookup()">Search</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters (results view) -->
+    <div id="nav-filter-strip" class="nav-filter-strip" style="display: none;">
+      <div class="nav-filters-grid">
+        <input type="text" id="filter-search" class="nav-filter-input"
+          placeholder="Name, email, role or company" oninput="applyFilters()">
+
+        <select id="filter-program" class="nav-filter-select" onchange="applyFilters()">
+          <option value="ALL">All programs</option>
+          <option value="Program 1">Program 1: Scaler Academy</option>
+          <option value="Program 2">Program 2: DSML</option>
+          <option value="Program 3">Program 3: FDE</option>
+          <option value="Program 4">Program 4: Agentic AI</option>
+          <option value="Program 5">Program 5: DevOps and Cloud</option>
+        </select>
+
+        <select id="filter-track" class="nav-filter-select" onchange="applyFilters()">
+          <option value="ALL">All track levels</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Advanced">Advanced</option>
+        </select>
+
+        <select id="filter-persona" class="nav-filter-select" onchange="applyFilters()">
+          <option value="ALL">All personas</option>
+          <option value="Non-Tech">Non-tech / switcher</option>
+          <option value="Healthcare">Healthcare and medical</option>
+          <option value="Security">Security and protective</option>
+          <option value="Education">Education and teaching</option>
+          <option value="Hospitality">Hospitality and food</option>
+          <option value="Trades">Trades and construction</option>
+          <option value="Logistics">Logistics and transportation</option>
+          <option value="Retail">Retail and customer</option>
+          <option value="HR">HR and people ops</option>
+          <option value="Sales">Sales and marketing</option>
+          <option value="Finance">Finance and accounting</option>
+          <option value="Legal">Legal and public admin</option>
+          <option value="Traditional Engineering">Traditional engineering</option>
+          <option value="QA">QA / SDET / testing</option>
+          <option value="Data">Data and analytics</option>
+          <option value="DevOps">DevOps and cloud</option>
+          <option value="Systems">Systems and embedded</option>
+          <option value="Software">Software engineering</option>
+        </select>
+
+        <select id="filter-retention" class="nav-filter-select" onchange="applyFilters()">
+          <option value="ALL">All retention</option>
+          <option value="HIGH">High (80% or more)</option>
+          <option value="MODERATE">Moderate (75 to 79%)</option>
+          <option value="RISK">Pacing risk (under 75%)</option>
+        </select>
+
+        <select id="filter-confidence" class="nav-filter-select" onchange="applyFilters()">
+          <option value="ALL">All confidence</option>
+          <option value="HIGH">High (75% or more)</option>
+          <option value="MID">Mid (55 to 74%)</option>
+          <option value="LOW">Low (under 55%)</option>
+        </select>
+
+        <button class="nav-filter-reset" onclick="resetFilters()" title="Clear all filters">Reset</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Application -->
+  <div class="app-container">
+
+    <!-- View 1: evaluate a lead (search by email or bulk upload) -->
+    <div id="view-upload" class="tab-view active">
+
+      <section class="hero-band">
+        <div class="hero-copy">
+          <h1>Program recommendation</h1>
+          <p>Each lead is mapped to a persona, checked against historical retention and refund data, and given a recommended program with a fallback.</p>
+        </div>
+      </section>
+
+      <div class="page">
+        <div class="home-grid">
+
+          <div class="menu-tabs" role="tablist">
+            <button type="button" role="tab" id="tab-mode-email" class="menu-tab active" data-mode="email"
+              onclick="switchEvaluationMode('email')">
+              <span class="menu-tab-title">Search by email</span>
+              <span class="menu-tab-sub">Look up one lead</span>
+            </button>
+            <button type="button" role="tab" id="tab-mode-csv" class="menu-tab" data-mode="csv"
+              onclick="switchEvaluationMode('csv')">
+              <span class="menu-tab-title">Bulk upload</span>
+              <span class="menu-tab-sub">Evaluate a CSV or XLSX file</span>
+            </button>
+          </div>
+
+          <div class="content-card">
+
+            <!-- Menu 1: single lead lookup -->
+            <section class="menu-panel" id="mode-content-email">
+              <header class="panel-title">
+                <h2>Search by email</h2>
+                <p>Look up one lead in Marketing MIS and open its dossier.</p>
+              </header>
+
+              <label class="action-label" for="home-live-search-input">Email address, phone number or name</label>
+              <div class="field-row field-row-lg">
+                <input type="text" id="home-live-search-input" class="input" placeholder="name@example.com"
+                  onkeydown="if(event.key === 'Enter') handleLiveLeadSearch()">
+                <button type="button" class="btn-sm primary" onclick="handleLiveLeadSearch()">Fetch and evaluate</button>
+              </div>
+              <div id="live-search-status-msg" class="msg" style="display: none;"></div>
+            </section>
+
+            <!-- Menu 2: bulk upload -->
+            <section class="menu-panel" id="mode-content-csv" style="display: none;">
+              <header class="panel-title">
+                <h2>Bulk upload</h2>
+                <p>Evaluate many leads at once. The results open in the Results tab.</p>
+              </header>
+
+              <input type="file" id="file-upload-input" accept=".csv, .xlsx, .xls" onchange="handleFileChosen(event)">
+              <div class="dropzone-box"
+                ondragover="event.preventDefault(); this.classList.add('is-dragover');"
+                ondragleave="this.classList.remove('is-dragover');"
+                ondrop="event.preventDefault(); this.classList.remove('is-dragover'); if(event.dataTransfer.files.length){ document.getElementById('file-upload-input').files = event.dataTransfer.files; handleFileChosen({target: document.getElementById('file-upload-input')}); }">
+                <div class="dropzone-title" id="dropzone-status-title">Drop a CSV or XLSX file here</div>
+                <div class="dropzone-sub" id="dropzone-status-sub">Up to 10,000 rows. Needs an email column. Full Metabase data is evaluated as it is. If the file has only emails, the lead details are fetched from Metabase.</div>
+                <button type="button" class="btn-sm primary"
+                  onclick="document.getElementById('file-upload-input').click()">Choose file</button>
+              </div>
+
+              <!-- Evaluation progress -->
+              <div id="eval-progress-container" class="eval-progress-container">
+                <div class="eval-progress-header">
+                  <div class="eval-progress-title">
+                    <span id="eval-pulse" class="eval-pulse-dot"></span>
+                    <span id="eval-status-label">Evaluating leads</span>
+                  </div>
+                  <div class="eval-progress-pct" id="eval-progress-pct">0%</div>
+                </div>
+                <div class="eval-progress-bar-bg">
+                  <div class="eval-progress-fill" id="eval-progress-fill"></div>
+                </div>
+                <div class="eval-stages-stepper">
+                  <div class="eval-stage-item" id="stage-1">
+                    <div class="eval-stage-badge"><span id="stage-icon-1"></span>Step 1</div>
+                    <div class="eval-stage-title">Read file</div>
+                  </div>
+                  <div class="eval-stage-item" id="stage-2">
+                    <div class="eval-stage-badge"><span id="stage-icon-2"></span>Step 2</div>
+                    <div class="eval-stage-title">Check eligibility</div>
+                  </div>
+                  <div class="eval-stage-item" id="stage-3">
+                    <div class="eval-stage-badge"><span id="stage-icon-3"></span>Step 3</div>
+                    <div class="eval-stage-title">Match retention data</div>
+                  </div>
+                  <div class="eval-stage-item" id="stage-4">
+                    <div class="eval-stage-badge"><span id="stage-icon-4"></span>Step 4</div>
+                    <div class="eval-stage-title">Match curriculum</div>
+                  </div>
+                  <div class="eval-stage-item" id="stage-5">
+                    <div class="eval-stage-badge"><span id="stage-icon-5"></span>Step 5</div>
+                    <div class="eval-stage-title">Prepare recommendations</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- View 2: evaluated leads -->
+    <div id="view-analysis" class="tab-view" style="display: none;">
+      <div class="table-card">
+        <div class="table-top-bar">
+          <div class="table-count-label">Evaluated leads
+            <span class="count"><span id="table-display-count">0</span> shown of <span id="table-total-count">0</span></span>
+          </div>
+          <div class="table-top-actions">
+            <button class="btn-sm" onclick="downloadMasterCsv()" title="Download all evaluated leads as CSV">Export CSV</button>
+            <button class="btn-sm" onclick="downloadMasterExcel()" title="Download all evaluated leads as an Excel file">Export Excel</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="leads-table">
+            <thead>
+              <tr>
+                <th id="th-lead-id" style="width: 110px;">Lead ID</th>
+                <th style="min-width: 170px;">Candidate</th>
+                <th style="min-width: 175px;">Role and experience</th>
+                <th style="min-width: 200px;">Recommended program</th>
+                <th style="min-width: 190px;">Fallback program</th>
+                <th style="min-width: 150px;">Retention</th>
+                <th class="col-action"></th>
+              </tr>
+            </thead>
+            <tbody id="leads-tbody">
+              <tr class="empty-row">
+                <td colspan="7">No leads loaded. Look up a lead or upload a file to begin.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination-bar" id="pagination-bar">
+          <div id="pagination-info">Showing 0 of 0 leads</div>
+          <div>
+            <button class="btn-sm" id="btn-load-more" onclick="loadMoreLeadsChunk()" style="display: none;">Load more leads</button>
+            <div class="pagination-controls">
+              <button class="btn-sm" id="btn-prev-page" onclick="changePage(-1)" disabled>Previous</button>
+              <span>Page <span id="current-page-display">1</span> of <span id="total-pages-display">1</span></span>
+              <button class="btn-sm" id="btn-next-page" onclick="changePage(1)" disabled>Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Candidate dossier (full screen) -->
+  <div class="modal-overlay" id="lead-modal" onclick="handleOverlayClick(event)">
+    <div class="modal-container">
+
+      <div class="sheet-head">
+        <div class="sheet-title">
+          <span class="candidate-name" id="modal-name">-</span>
+          <span class="id-tag" id="modal-id"></span>
+          <span class="candidate-academic-badge" id="modal-academic-badge">-</span>
+        </div>
+        <div class="sheet-actions">
+          <div class="modal-candidate-nav">
+            <button id="modal-btn-prev-candidate" onclick="navigateCandidate(-1)" title="Previous candidate (left arrow)"
+              class="modal-nav-arrow-btn">Previous</button>
+            <span id="modal-candidate-counter">1 / 1</span>
+            <button id="modal-btn-next-candidate" onclick="navigateCandidate(1)" title="Next candidate (right arrow)"
+              class="modal-nav-arrow-btn">Next</button>
+          </div>
+          <button class="modal-close-btn" onclick="closeModal()" title="Close (Esc)">Close</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="sheet-inner">
+
+          <div class="profile-grid">
+            <div class="dossier-tile">
+              <div class="dossier-tile-label">Current role</div>
+              <div class="dossier-tile-val" id="modal-role">-</div>
+            </div>
+            <div class="dossier-tile">
+              <div class="dossier-tile-label">Previous organization</div>
+              <div class="dossier-tile-val" id="modal-org">-</div>
+            </div>
+            <div class="dossier-tile">
+              <div class="dossier-tile-label">Experience</div>
+              <div class="dossier-tile-val" id="modal-exp">-</div>
+            </div>
+            <div class="dossier-tile">
+              <div class="dossier-tile-label">Education</div>
+              <div class="dossier-tile-val" id="modal-edu">-</div>
+            </div>
+            <div class="dossier-tile">
+              <div class="dossier-tile-label">Company type</div>
+              <div class="dossier-tile-val" id="modal-company">-</div>
+            </div>
+            <div class="dossier-tile">
+              <div class="dossier-tile-label">Inbound enquiry</div>
+              <div class="dossier-tile-val" id="modal-inbound">-</div>
+            </div>
+            <div class="dossier-tile">
+              <div class="dossier-tile-label">Masterclass or event</div>
+              <div class="dossier-tile-val" id="modal-tp-event" title="">-</div>
+            </div>
+            <div class="dossier-tile">
+              <div class="dossier-tile-label">Attendance</div>
+              <div class="dossier-tile-val" id="modal-tp-attendance">-</div>
+            </div>
+            <div class="dossier-tile">
+              <div class="dossier-tile-label">Diagnostic SET</div>
+              <div class="dossier-tile-val" id="modal-tp-sat">-</div>
+            </div>
+            <div class="dossier-tile">
+              <div class="dossier-tile-label">Source and channel</div>
+              <div class="dossier-tile-val" id="modal-tp-channel">-</div>
+            </div>
+          </div>
+
+          <div class="rec-grid">
+
+            <!-- Primary recommendation -->
+            <div class="rec-box primary-rec">
+              <div class="rec-box-head">
+                <div class="rec-badge-pill pill-primary">Recommended</div>
+                <div class="rec-confidence" id="modal-primary-confidence">-</div>
+              </div>
+              <div class="rec-program-name" id="modal-primary-prog">-</div>
+              <div class="rec-track-name" id="modal-primary-track">-</div>
+
+              <div class="rec-why-box" id="modal-primary-why"></div>
+
+              <div class="rec-career-box" id="modal-primary-career-box">
+                <div class="rec-career-header">
+                  <div class="rec-career-title">Career outcomes</div>
+                  <span class="rec-career-salary-tag" id="modal-primary-career-salary"></span>
+                </div>
+                <div class="rec-career-roles" id="modal-primary-career-roles"></div>
+                <div class="rec-career-desc" id="modal-primary-career-desc"></div>
+              </div>
+
+              <div class="rec-links">
+                <a id="modal-primary-catalogue" href="#" target="_blank" rel="noopener" class="btn-catalogue">Brochure and syllabus</a>
+              </div>
+            </div>
+
+            <!-- Fallback recommendation -->
+            <div class="rec-box fallback-rec">
+              <div class="rec-box-head">
+                <div class="rec-badge-pill pill-fallback">Fallback</div>
+                <div class="rec-confidence" id="modal-fallback-confidence">-</div>
+              </div>
+              <div class="rec-program-name" id="modal-fallback-prog">-</div>
+              <div class="rec-track-name" id="modal-fallback-track">-</div>
+
+              <div class="rec-why-box" id="modal-fallback-why"></div>
+
+              <div class="rec-career-box" id="modal-fallback-career-box">
+                <div class="rec-career-header">
+                  <div class="rec-career-title">Career outcomes</div>
+                  <span class="rec-career-salary-tag" id="modal-fallback-career-salary"></span>
+                </div>
+                <div class="rec-career-roles" id="modal-fallback-career-roles"></div>
+                <div class="rec-career-desc" id="modal-fallback-career-desc"></div>
+              </div>
+
+              <div class="rec-links">
+                <a id="modal-fallback-catalogue" href="#" target="_blank" rel="noopener" class="btn-catalogue">Brochure and syllabus</a>
+              </div>
+              <div class="rec-also" id="modal-also-consider" hidden></div>
+            </div>
+          </div>
+
+          <!-- Curriculum -->
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <div class="section-title" id="curriculum-prog-title">Curriculum and production milestones</div>
+                <div class="section-sub" id="curriculum-prog-sub"></div>
+              </div>
+              <div class="section-tools">
+                <button id="btn-curr-primary" class="filter-tab active" onclick="switchCurriculumTab('primary')">Recommended track</button>
+                <button id="btn-curr-fallback" class="filter-tab" onclick="switchCurriculumTab('fallback')">Fallback track</button>
+                <a id="modal-curriculum-catalogue-link" href="#" target="_blank" rel="noopener" class="btn-catalogue">Program brochure</a>
+              </div>
+            </div>
+
+            <div class="curriculum-module-list" id="curriculum-modules-container"></div>
+
+            <div class="subsection">
+              <div class="subsection-title">Companies hiring for this specialization</div>
+              <div id="mkt-companies-list" class="company-list"></div>
+            </div>
+
+            <div class="market-comparison-section" id="modal-market-comparison-section">
+              <div class="market-comp-header">
+                <div>
+                  <div class="market-comp-title">Scaler compared with other programs:
+                    <span id="comp-active-program-name">Recommended program</span></div>
+                  <div class="market-comp-sub">How this program compares with typical alternatives such as recorded
+                    courses, generic bootcamps and executive diplomas.</div>
+                </div>
+              </div>
+              <div class="market-comp-table-wrapper">
+                <table class="market-comp-table">
+                  <thead>
+                    <tr>
+                      <th class="col-dim">Dimension</th>
+                      <th class="col-scaler" id="comp-th-scaler">Scaler</th>
+                      <th class="col-market">Typical alternatives</th>
+                    </tr>
+                  </thead>
+                  <tbody id="market-comp-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="strategic-faq-section" id="modal-strategic-faq-section">
+              <div class="strategic-faq-header">
+                <div>
+                  <div class="strategic-faq-title">Counseling notes:
+                    <span id="faq-active-program-name">Recommended program</span></div>
+                  <div class="strategic-faq-sub">Answers on career trajectory, compensation, interview bars and
+                    curriculum for the recommended programs.</div>
+                </div>
+                <div class="strategic-faq-selector" id="faq-program-selector"></div>
+              </div>
+              <div class="faq-accordion-list" id="faq-accordion-list"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-region" id="toast-region" aria-live="polite"></div>
+
+  <script>
+    let allLeads = [];
+    let filteredLeads = [];
+    let activeLeadData = null;
+    let currentPage = 1;
+    const PAGE_SIZE = 50;
+    let curriculumCatalog = {};
+
+    /* Escape any text that comes from lead data before it is placed in HTML. */
+    function esc(t) {
+      return String(t == null ? '' : t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    /* Generated explanations contain a little markup (bold, lists). Keep only those tags, drop every attribute. */
+    const SAFE_TAGS = new Set(['B', 'I', 'EM', 'STRONG', 'BR', 'UL', 'OL', 'LI', 'P', 'SPAN', 'SMALL', 'CODE']);
+    function safeHtml(html) {
+      const tpl = document.createElement('template');
+      tpl.innerHTML = String(html == null ? '' : html);
+      const walk = (node) => {
+        Array.from(node.childNodes).forEach((ch) => {
+          if (ch.nodeType === 1) {
+            if (!SAFE_TAGS.has(ch.tagName)) { ch.replaceWith(document.createTextNode(ch.textContent)); return; }
+            Array.from(ch.attributes).forEach((a) => ch.removeAttribute(a.name));
+            walk(ch);
+          } else if (ch.nodeType !== 3) {
+            ch.remove();
+          }
+        });
+      };
+      walk(tpl.content);
+      return tpl.innerHTML;
+    }
+
+    /* In-page notices instead of browser pop-ups. */
+    function notify(message, tone) {
+      const region = document.getElementById('toast-region');
+      const text = String(message == null ? '' : message);
+      if (!region) { console.warn(text); return; }
+      region.innerHTML = '';
+      const kind = tone || (/fail|error|could not|no lead|enter |not configured|exceeds/i.test(text) ? 'error' : 'info');
+      const el = document.createElement('div');
+      el.className = 'toast' + (kind === 'error' ? ' error' : '');
+      const span = document.createElement('span');
+      span.textContent = text;
+      const close = document.createElement('button');
+      close.type = 'button'; close.textContent = 'Dismiss';
+      close.onclick = () => el.remove();
+      el.appendChild(span); el.appendChild(close);
+      region.appendChild(el);
+      setTimeout(() => el.remove(), kind === 'error' ? 9000 : 6000);
+    }
+
+    /* SCALER VS OTHER MARKET PROGRAMS COMPARATIVE INTELLIGENCE */
+    const MARKET_PROGRAM_COMPARISONS = {
+      'P1_ACADEMY': {
+        name: 'Scaler Academy: Software & AI Engineering',
+        shortScaler: 'Live MAANG System Design & 15-min TA doubt resolution',
+        shortMarket: 'Pre-recorded videos, toy CRUD apps & zero architecture review',
+        keyDiff: '900+ hiring partners & 1:1 senior mentors vs self-apply job boards',
+        dimensions: [
+          {
+            dim: 'Instruction & Pedagogy',
+            scaler: '100% live interactive masterclasses taught by senior tech leads & principal architects from Google, Meta, Amazon, and Microsoft.',
+            market: '80–90% pre-recorded video playlists or junior freelance instructors reading generic slide decks without production battle-scars.'
+          },
+          {
+            dim: 'Curriculum & Engineering Scale',
+            scaler: 'Low-Level Design (LLD) & High-Level System Design (HLD) engineered for 10M+ DAU scale, distributed caching, sharding, and microservices.',
+            market: 'Basic surface-level CRUD applications (To-Do lists, simple clones) with zero concurrency, load testing, or architectural depth.'
+          },
+          {
+            dim: 'Doubt Resolution Speed',
+            scaler: 'Live 1:1 Teaching Assistants resolving compiler, algorithmic, and architecture issues within 15 minutes, 7 days a week.',
+            market: 'Unmonitored community forums, Discord/Slack threads, or email tickets taking 24–72 hours, stalling learning momentum.'
+          },
+          {
+            dim: '1:1 Mentorship & Mock Interviews',
+            scaler: 'Bi-weekly 1:1 sessions with MAANG senior engineers for tailored resume audits, portfolio reviews, and intensive mock interview marathons.',
+            market: 'Zero 1:1 mentorship, or generic resume parser templates with no domain-specific engineering feedback.'
+          },
+          {
+            dim: 'Placement & Career Ecosystem',
+            scaler: 'Dedicated career placement cell with direct referrals into 900+ vetted hiring partners and exclusive recruitment drives.',
+            market: 'Unassisted job applications; links to public job boards with no employer endorsement or internal referral leverage.'
+          }
+        ]
+      },
+      'P2_DSML': {
+        name: 'Scaler Data Science & Machine Learning',
+        shortScaler: 'Live production ML pipelines on real cloud compute & PySpark',
+        shortMarket: 'Toy Colab notebooks (Iris/Titanic) with academic theory only',
+        keyDiff: 'End-to-end MLOps deployment vs unapplied scikit-learn scripts',
+        dimensions: [
+          {
+            dim: 'Instruction & Real-World ML',
+            scaler: 'Live industry training by ML leads and Kaggle grandmasters from Uber, Swiggy, and Walmart Labs deploying live production models.',
+            market: 'Academic faculty teaching theoretical statistics and mathematical proofs with zero real enterprise deployment experience.'
+          },
+          {
+            dim: 'Datasets & Cloud Infrastructure',
+            scaler: 'Dirty, high-velocity big-data pipelines using PySpark, Docker, Airflow, and real AWS/GCP GPU clusters with millions of rows.',
+            market: 'Small, pre-cleaned toy datasets (Iris, Titanic, Boston Housing) executed locally on basic Google Colab without production scale.'
+          },
+          {
+            dim: 'Doubt Resolution Speed',
+            scaler: '15-minute live 1:1 TA support debugging complex CUDA/PyTorch memory errors, model convergence, and data pipelines.',
+            market: 'Learners spend days stuck on environment setup, Docker CUDA drivers, or package dependency clashes.'
+          },
+          {
+            dim: 'ML System Design & Mocks',
+            scaler: '1:1 ML System Design mock interviews simulating enterprise recommendation engines, search ranking, and fraud detection.',
+            market: 'Multiple-choice quizzes testing syntax recall without architectural defense or scalability rounds.'
+          },
+          {
+            dim: 'Placement & Career Ecosystem',
+            scaler: 'Direct recruitment pipelines to 900+ partner tech companies hiring for Data Scientist and MLOps roles.',
+            market: 'Certificate of completion with no hiring partner commitments or structured interview pipelines.'
+          }
+        ]
+      },
+      'P3_FDE': {
+        name: 'Scaler Forward Deployed Engineering (FDE)',
+        shortScaler: 'Palantir/Databricks-style rapid client POCs & GenAI integration',
+        shortMarket: 'Generic MERN-stack bootcamps with zero enterprise AI integration',
+        keyDiff: 'Client-facing solution architecture vs entry-level junior coding',
+        dimensions: [
+          {
+            dim: 'Role Focus & Commercial Value',
+            scaler: 'Modeled on elite Palantir, Databricks, and AWS FDE practices—rapid prototyping, enterprise API integration, and client architecture.',
+            market: 'Standard full-stack web dev bootcamps teaching isolated frontend/backend code without client business context.'
+          },
+          {
+            dim: 'Modern AI & Systems Glue',
+            scaler: 'Hands-on enterprise Agentic RAG, LLM orchestration, microservices integration, and fast client POC sprint deliverables.',
+            market: 'Dated curriculum focusing purely on monolithic CRUD operations with zero GenAI or enterprise glue systems.'
+          },
+          {
+            dim: 'Doubt & Architectural Guidance',
+            scaler: '1:1 solution architecture critiques by active Forward Deployed Engineers and Staff Solutions Architects.',
+            market: 'Junior teaching assistants unable to evaluate high-level client business requirements or trade-offs.'
+          },
+          {
+            dim: 'Client Defense & Presentation',
+            scaler: 'Mock client defense panels evaluating both code quality and executive stakeholder communication.',
+            market: 'Isolated coding tests with zero client-handling, requirement gathering, or presentation coaching.'
+          },
+          {
+            dim: 'Placement & Compensation',
+            scaler: 'Direct pipeline into top enterprise SaaS firms and global consultancies hiring FDEs at ₹18–₹45 LPA.',
+            market: 'Generic entry-level junior developer roles competing with fresh graduates for ₹4–₹8 LPA.'
+          }
+        ]
+      },
+      'P4_AIML': {
+        name: 'Scaler Agentic AI & Machine Learning',
+        shortScaler: 'Multi-agent frameworks (LangGraph/CrewAI) & local fine-tuning',
+        shortMarket: 'Basic OpenAI API prompt wrappers & outdated prompt engineering',
+        keyDiff: 'Autonomous agentic workflows vs trivial ChatGPT chat bots',
+        dimensions: [
+          {
+            dim: 'AI Frontier & Frameworks',
+            scaler: 'State-of-the-art multi-agent systems (LangGraph, CrewAI, AutoGen), model fine-tuning (LoRA/QLoRA), and self-healing agent loops.',
+            market: 'Surface-level OpenAI API wrapper tutorials and outdated prompt engineering tricks that are rapidly commoditized.'
+          },
+          {
+            dim: 'Production Scale & Vector DBs',
+            scaler: 'Vector databases (Milvus, Pinecone), latency optimization, vLLM inference serving, and enterprise security guardrails.',
+            market: 'Basic Python scripts running locally without latency profiling, eval benchmarks, or security checks.'
+          },
+          {
+            dim: 'Doubt Resolution Speed',
+            scaler: '15-minute live assistance diagnosing token context limits, hallucination mitigation, and agent loop stalls.',
+            market: 'Static forums; no support for fast-moving agentic framework updates or complex open LLM runtime errors.'
+          },
+          {
+            dim: 'Industry Mentors & AI Leads',
+            scaler: '1:1 mentorship from GenAI platform leads and AI researchers who have shipped production agent systems.',
+            market: 'Instructors who started learning GenAI weeks before teaching, lacking production deployment depth.'
+          },
+          {
+            dim: 'Placement & High-Demand Roles',
+            scaler: 'Direct recruitment for high-paying Generative AI Engineer, Agentic AI Architect, and LLMOps positions.',
+            market: 'Generalist "Python developer" roles that do not command the GenAI market premium.'
+          }
+        ]
+      },
+      'P5_DEVOPS': {
+        name: 'Scaler DevOps & Cloud Infrastructure',
+        shortScaler: '100% real AWS multi-region infrastructure & production Kubernetes',
+        shortMarket: 'Simulated web sandboxes, local Docker & multiple-choice tests',
+        keyDiff: 'Live cluster disaster recovery war-rooms & CKA certification alignment',
+        dimensions: [
+          {
+            dim: 'Real Cloud Infrastructure',
+            scaler: '100% real AWS multi-region cloud accounts provisioned via modular Terraform and ArgoCD GitOps; zero artificial limits.',
+            market: 'Local Docker Desktop or vendor-locked simulated consoles that hide production network complexities.'
+          },
+          {
+            dim: 'Toolchain & Kubernetes Depth',
+            scaler: 'Multi-month deep dive into production Kubernetes, Helm, ArgoCD GitOps, Prometheus/Grafana observability, and MLOps electives.',
+            market: 'Brief, superficial overview of Docker commands and basic Jenkins pipelines with no distributed cluster experience.'
+          },
+          {
+            dim: 'Production Incident War-Rooms',
+            scaler: 'Live chaos engineering and incident triage drills where mentors inject cluster outages for real-time recovery.',
+            market: 'Static quizzes and multiple-choice tests; no live troubleshooting under simulated production pressure.'
+          },
+          {
+            dim: '1:1 SRE / Architect Mentorship',
+            scaler: 'Direct coaching from Principal SREs and Cloud Architects at top cloud-native tech companies; aligned with AWS & CKA certifications.',
+            market: 'Generic slides without production architecture review or industry-standard CKA preparation.'
+          },
+          {
+            dim: 'Placement & Compensation',
+            scaler: 'Direct access to 900+ hiring partners hiring for DevOps, SRE, and Platform Engineering roles (₹14–₹50+ LPA).',
+            market: 'Routine system administrator or basic IT support job referrals.'
+          }
+        ]
+      }
+    };
+
+    /* STRATEGIC CAREER ADVISORY & PROGRAM Q&A PLAYBOOK (7 REAL-WORLD QUESTIONS PER PROGRAM WITH SCALER SUPPORT) */
+    const PROGRAM_STRATEGIC_FAQS = {
+      'P3_FDE': {
+        name: 'Program 3: Forward Deployed Engineer (FDE)',
+        faqs: [
+          {
+            q: 'Why is FDE a good career, and why now?',
+            a: 'Enterprises are investing tens of millions into modern AI platforms, LLM suites, and specialized data clouds, but <b>over 80% struggle to operationalize them</b> inside fragmented legacy systems. Traditional sales engineers don’t write production code, while backend devs rarely interface directly with customer stakeholders. The <b>Forward Deployed Engineer (FDE)</b> bridges this critical gap—deploying directly to customer environments, writing integration glue code, customizing enterprise RAG pipelines, and solving architectural bottlenecks.<br><br><div class="faq-highlight"><b>How Scaler Prepares You:</b> Scaler provides the only structured program in India that equips engineers with both production backend/cloud systems and client-facing AI deployment skills, turning you into a high-leverage engineer commanding top ₹35LPA+ market compensation.</div>'
+          },
+          {
+            q: 'Who can become an FDE, where do they start, and how far can they grow?',
+            a: '<ul><li><b>Who Can Join:</b> Software developers, backend engineers, data engineers, technical solutions consultants, and QA/SDET professionals with sound coding logic and customer-facing aptitude.</li><li><b>Where They Start:</b> Associate FDE or Solutions Software Engineer handling API pipelines, client data ingestion, and enterprise proof-of-concepts (PoCs).</li><li><b>Growth Trajectory:</b> Senior FDE &rarr; Lead Solutions Architect &rarr; Head of Forward Deployment / VP of Enterprise AI. FDEs frequently transition into CTO, Head of Product, or Founder roles because they possess deep systems engineering plus customer commercial acumen.</li><li><b>How Scaler Supports Your Transition:</b> Through diagnostic evaluation (SAT) and personalized track leveling, Scaler identifies your baseline gaps in distributed systems or client communication, placing you into the exact track pace with 1:1 executive coaching to fast-track your seniority.</li></ul>'
+          },
+          {
+            q: 'What do companies test in FDE interviews?',
+            a: 'Top enterprise software platforms (Palantir, Databricks, Snowflake, OpenAI Enterprise partners, ThoughtSpot) evaluate 4 pillars:<ul><li><b>Production Ingestion &amp; APIs:</b> Writing async Python/Java, transforming unstructured customer data, and integrating legacy SQL/CDC pipelines.</li><li><b>Distributed System Design:</b> High availability, rate limiting, and fault-tolerant microservices under Black Friday load spikes.</li><li><b>Applied Enterprise AI:</b> Building and evaluating production RAG pipelines, vector search, tool-calling agents, and hallucination guardrails.</li><li><b>Client-Facing Architectural Scenarios:</b> Live troubleshooting simulations, explaining engineering trade-offs to enterprise CTOs, and scoping ambiguous requirements.</li><li><b>How Scaler Prepares You:</b> Scaler’s Mock Interview Marathon simulates exact enterprise client escalation scenarios and technical defense panels with practicing Staff FDEs before your actual hiring rounds.</li></ul>'
+          },
+          {
+            q: 'What do learners build, and what skills do they gain?',
+            a: 'Learners build full-stack enterprise production systems on top of <i>Meridian</i> (an enterprise monorepo):<ul><li>High-throughput order processing backend handling simulated Black Friday traffic with Kafka, Redis, and Postgres.</li><li>Enterprise customer support RAG engine with hybrid search, re-ranking, and dynamic context caching.</li><li>Multi-agent orchestration workflows connecting CRM, payment systems, and internal analytics with RBAC security.</li><li>Terraform-automated multi-region AWS cloud infrastructure with Docker, Kubernetes, and automated disaster recovery.</li><li><b>Module Guidance &amp; Live Doubt Support:</b> Every capstone project is reviewed line-by-line by industry mentors, backed by 15-minute 1:1 live Teaching Assistant (TA) support available 12+ hours daily.</li></ul>'
+          },
+          {
+            q: 'What are our five unique strengths, and how do we compare?',
+            a: '<div class="faq-highlight"><b>Five Unique Scaler Strengths:</b></div><ol style="margin-left: 20px;"><li><b>Real Enterprise Legacy Codebase (Meridian):</b> You don’t build toy greenfield apps; you solve integration challenges on a complex, living enterprise codebase.</li><li><b>End-to-End Enterprise Lifecycle:</b> Covers data extraction, backend services, frontend layers, production AI agents, and AWS/Kubernetes deployments.</li><li><b>Palantir &amp; Enterprise Practitioner Pedagogy:</b> Curriculum engineered alongside practicing FDEs from leading global enterprise platforms.</li><li><b>Dual-Core Syllabi:</b> 50% distributed systems &amp; cloud reliability + 50% modern generative AI &amp; agentic orchestration.</li><li><b>Comprehensive Extra Services:</b> <ul><li><b>1:1 Senior Mentorship:</b> Matched with practicing Engineering Leads for bespoke roadmap guidance.</li><li><b>15-Min Live Doubt Resolution:</b> 100+ vetted TAs answering doubts via voice, chat, and screen-share.</li><li><b>Career Services &amp; Placement Cell:</b> Direct introductions to 900+ hiring partners, ATS-optimized resume makeover, and expert salary negotiation coaching.</li><li><b>Lifelong Alumni Network:</b> 10,000+ Scaler alumni across top tech companies worldwide for lifelong referrals.</li></ul></li></ol>'
+          },
+          {
+            q: 'Who is hiring in India, what do they pay, and are global jobs possible?',
+            a: '<ul><li><b>Hiring Companies in India:</b> Palantir, Databricks, Snowflake, Quantiphi, Fractal, Accenture AI, Postman, BrowserStack, Freshworks, and US enterprise SaaS GCCs.</li><li><b>Compensation Range:</b> 1–4 YOE: <b>₹16 – ₹32 LPA</b>; 5–8 YOE: <b>₹35 – ₹65 LPA</b>; Enterprise Leads (8+ YOE): <b>₹70 LPA – ₹1.2 Cr+</b>.</li><li><b>Global &amp; Remote Opportunities:</b> Exceptionally high demand for remote US/Europe enterprise roles ($100k – $180k USD) due to the global scarcity of client-facing production engineers.</li><li><b>How Scaler Placement Cell Connects You:</b> Scaler’s dedicated placement managers advocate your profile directly with hiring managers at top enterprise partners, unlocking off-campus hiring drives and referral pipelines.</li></ul>'
+          },
+          {
+            q: 'Why is the course built this way, and can learners get job-ready sooner?',
+            a: 'The syllabus is sequenced strictly to mirror the real-world enterprise deployment lifecycle: <b>Linux &amp; Ingestion &rarr; Production Backend &rarr; Frontend Client Layer &rarr; Enterprise RAG &rarr; Autonomous Agents &rarr; Cloud &amp; Kubernetes &rarr; Disaster Recovery</b>.<br><br><div class="faq-highlight"><b>Accelerated Job-Readiness with Scaler:</b> By <b>Month 6–8</b>, you complete the core ingestion, backend, and RAG modules, making you immediately eligible for Scaler’s early recruitment pipeline for backend and integration roles while you complete advanced cloud and multi-agent specializations.</div>'
+          }
+        ]
+      },
+      'P1_ACADEMY': {
+        name: 'Program 1: Software & AI Engineering (Scaler Academy)',
+        faqs: [
+          {
+            q: 'Why is Software & AI Engineering a good career, and why now?',
+            a: 'The software engineering bar has fundamentally changed: boilerplate coders are obsolete, while <b>AI-Assisted Software Engineers</b> who master Data Structures, Algorithms, Distributed System Design, and Agentic AI workflows are in record demand. Tech companies—from high-growth unicorns to MAANG—are building distributed, scalable architectures and require engineers who can architect resilient microservices and deliver software 5x faster using AI copilots.<br><br><div class="faq-highlight"><b>How Scaler Empowers You:</b> Scaler Academy pioneered modern software coaching in India, consistently transforming service-company engineers into tier-1 product developers with an average 126% salary hike.</div>'
+          },
+          {
+            q: 'Who can become a Software Engineer, where do they start, and how far can they grow?',
+            a: '<ul><li><b>Who Can Join:</b> Tech and non-tech graduates, service-firm software engineers (TCS, Infosys, Wipro, Cognizant), QA/automation testers, and backend engineers targeting top product companies.</li><li><b>Where They Start:</b> SDE-1 / Software Development Engineer building core application features, database schemas, and microservices.</li><li><b>Growth Path:</b> SDE-1 &rarr; SDE-2 (Autonomous feature owner) &rarr; Senior SDE (Module owner) &rarr; Staff / Principal Engineer &rarr; VP of Engineering / CTO.</li><li><b>Scaler Track Personalization:</b> Based on your coding assessment, Scaler places you into Beginner (logic &amp; syntax fundamentals), Intermediate (algorithms &amp; problem solving), or Advanced (complex optimization &amp; distributed scale), ensuring the pace perfectly matches your starting point.</li></ul>'
+          },
+          {
+            q: 'What do companies test in Software & AI interviews?',
+            a: 'Product companies (Amazon, Microsoft, Google, Uber, Swiggy, Razorpay) assess 4 fundamental areas:<ul><li><b>Data Structures &amp; Algorithms:</b> Optimization using Trees, Graphs, Dynamic Programming, and Heaps with space-time complexity analysis.</li><li><b>Low-Level Design (LLD):</b> Object-Oriented Design, Clean Code principles, Design Patterns (Factory, Strategy, Observer), and Concurrency.</li><li><b>High-Level System Design (HLD):</b> Scalability, Distributed Caching (Redis), Message Queues (Kafka), Database Sharding, and CAP Theorem trade-offs.</li><li><b>AI-Augmented Development:</b> Effective use of AI coding assistants for test generation, code refactoring, and edge-case testing.</li><li><b>How Scaler Prepares You:</b> Scaler conducts extensive 1:1 mock coding and system design interviews with senior MAANG engineers, providing pinpoint feedback on time complexity, code cleanliness, and architectural trade-offs.</li></ul>'
+          },
+          {
+            q: 'What do learners build, and what skills do they gain?',
+            a: 'Learners build high-scale, production-grade applications:<ul><li>High-concurrency e-commerce order processing engine handling 100k+ requests per second.</li><li>Distributed ride-sharing backend with real-time geospatial tracking and low-latency matching.</li><li>AI-assisted automated code review and test suite generation pipeline.</li><li>Deep mastery of Java/C++/Python, SQL, Redis, Apache Kafka, Docker, and Microservices architecture.</li><li><b>Scaler Teaching Assistance:</b> You are never stuck on a bug. Scaler’s 100+ teaching assistants resolve doubts in under 15 minutes through live screen-share and code walk-throughs.</li></ul>'
+          },
+          {
+            q: 'What are our five unique strengths, and how do we compare?',
+            a: '<div class="faq-highlight"><b>Five Unique Scaler Strengths:</b></div><ol style="margin-left: 20px;"><li><b>MAANG &amp; Product Leader Faculty:</b> Direct live instruction from engineering leaders at Google, Amazon, Microsoft, and Uber.</li><li><b>AI-Assisted Engineering Curriculum:</b> First curriculum to integrate DSA and System Design with Agentic AI developer tools.</li><li><b>1:1 Industry Mentorship:</b> Dedicated senior engineer mentors for mock coding interviews and personalized career guidance.</li><li><b>Empirical Track Leveling:</b> Dynamic Beginner, Intermediate, and Advanced tracks tailored to candidate coding aptitude.</li><li><b>Comprehensive Extra Career Services:</b> <ul><li><b>Dedicated Placement Cell:</b> Direct introductions to 900+ hiring partners and exclusive hiring drives.</li><li><b>15-Min Live Doubt Resolution:</b> Instant 1:1 help whenever you are stuck on assignments.</li><li><b>Resume &amp; LinkedIn Makeover:</b> Professional tech recruiters optimize your profile for ATS and recruiter shortlists.</li><li><b>10,000+ Alumni Network:</b> Lifelong access to peers in top engineering teams globally.</li></ul></li></ol>'
+          },
+          {
+            q: 'Who is hiring in India, what do they pay, and are global jobs possible?',
+            a: '<ul><li><b>Hiring Companies in India:</b> Google, Microsoft, Amazon, Walmart, Uber, PhonePe, Swiggy, Zomato, Cred, Razorpay, Oracle, and 300+ product startups.</li><li><b>Compensation Range:</b> SDE-1 (0–3 YOE): <b>₹14 – ₹28 LPA</b>; SDE-2 (3–6 YOE): <b>₹28 – ₹55 LPA</b>; Senior/Staff (7+ YOE): <b>₹55 LPA – ₹1 Cr+</b>.</li><li><b>Global Opportunities:</b> High hiring activity for EU, UK, and Singapore relocation, alongside remote US product engineering roles.</li><li><b>Scaler Career Assistance:</b> Scaler’s placement team coordinates interview pipelines, provides pre-interview briefings, and assists with multiple offer negotiations.</li></ul>'
+          },
+          {
+            q: 'Why is the course built this way, and can learners get job-ready sooner?',
+            a: 'The curriculum progresses systematically: <b>Programming Foundations &rarr; Intermediate DSA &rarr; Advanced DSA &rarr; LLD &amp; Databases &rarr; Distributed System Design &rarr; Agentic AI Workflows</b>.<br><br><div class="faq-highlight"><b>Accelerated Job-Readiness with Scaler:</b> Learners complete core DSA and interview foundations within <b>4–5 months</b>, allowing them to start clearing product-firm screening rounds immediately while completing advanced system design specializations.</div>'
+          }
+        ]
+      },
+      'P2_DSML': {
+        name: 'Program 2: Data Science & Machine Learning (DSML)',
+        faqs: [
+          {
+            q: 'Why is DSML a good career, and why now?',
+            a: 'Every enterprise is racing to monetize proprietary data and integrate generative AI into business decision-making. Companies need data professionals who can cut through the noise: writing complex analytical queries, running rigorous statistical experiments, and deploying revenue-generating predictive models. Data Science continues to be one of the highest-paid and most intellectually rewarding domains in tech.<br><br><div class="faq-highlight"><b>How Scaler Prepares You:</b> Scaler bridges the gap between theoretical notebooks and enterprise data stacks, preparing you for real-world business impact and production deployments.</div>'
+          },
+          {
+            q: 'Who can become a Data Scientist, where do they start, and how far can they grow?',
+            a: '<ul><li><b>Who Can Join:</b> Software developers, business/data analysts, finance/operations specialists, math/statistics graduates, and domain experts seeking quantitative roles.</li><li><b>Where They Start:</b> Data Analyst or Associate Data Scientist building cohort funnels, executive dashboards, and baseline predictive models.</li><li><b>Growth Path:</b> Data Scientist &rarr; Senior Data Scientist &rarr; Lead ML Scientist &rarr; Head of Analytics / Chief Data Officer (CDO).</li><li><b>Scaler Track Personalization:</b> Non-coders enter the Python Foundations &amp; Analytics track, while developers dive straight into Statistics, Machine Learning, and MLOps, ensuring an optimal learning curve for every profile.</li></ul>'
+          },
+          {
+            q: 'What do companies test in DSML interviews?',
+            a: 'Top firms (Flipkart, Swiggy, Target, Fractal, McKinsey, Amazon) test 4 core dimensions:<ul><li><b>Advanced SQL &amp; Query Optimization:</b> Multi-table CTEs, window functions, user cohort retention, and aggregate analytical queries.</li><li><b>Statistical Rigor &amp; Experimentation:</b> A/B testing design, sample size determination, p-values, hypothesis tests, and causal inference.</li><li><b>Applied Machine Learning:</b> Supervised/Unsupervised models, loss functions, feature engineering, and metrics (AUC-ROC, F1, RMSE).</li><li><b>Business Problem Solving:</b> Translating ambiguous business problems (e.g. churn, customer LTV, delivery delays) into data hypotheses.</li><li><b>How Scaler Prepares You:</b> Scaler mentors conduct real-world business case study interviews and machine learning take-home assessments to build your applied problem-solving confidence.</li></ul>'
+          },
+          {
+            q: 'What do learners build, and what skills do they gain?',
+            a: 'Learners build enterprise-grade data and ML products:<ul><li>Customer churn and dynamic customer lifetime value (LTV) prediction system with automated feature stores.</li><li>Personalized e-commerce recommendation engine utilizing collaborative filtering and neural embeddings.</li><li>Generative AI automated business intelligence dashboard with natural language to SQL translation.</li><li>Production MLOps pipeline on AWS featuring model versioning, continuous training, and drift detection.</li><li><b>Scaler Support Services:</b> Live data lab sessions, GitHub portfolio audits, and instant TA doubt resolution on complex Python and SQL scripts.</li></ul>'
+          },
+          {
+            q: 'What are our five unique strengths, and how do we compare?',
+            a: '<div class="faq-highlight"><b>Five Unique Scaler Strengths:</b></div><ol style="margin-left: 20px;"><li><b>Flexible Dual Specialization:</b> Dual tracks for Product Analytics (business focus) and Deep ML Engineering (technical focus).</li><li><b>Real-World Industry Datasets:</b> Work on production datasets from Uber, Netflix, Amazon, and Flipkart.</li><li><b>Executive Storytelling &amp; Dashboards:</b> Specialized training on stakeholder presentations, storytelling with data, and executive influence.</li><li><b>End-to-End MLOps Coverage:</b> Model deployment on AWS with Docker, MLflow, and automated monitoring.</li><li><b>Comprehensive Extra Career Services:</b> <ul><li><b>1:1 Data Scientist Mentorship:</b> Guidance from practicing Principal Data Scientists at leading firms.</li><li><b>15-Min Live Doubt Resolution:</b> Instant help with code bugs and math intuition from skilled TAs.</li><li><b>Dedicated Placement Cell:</b> Access to 900+ hiring partners hiring for Data Analyst, BI, and ML Engineer positions.</li><li><b>Portfolio &amp; LinkedIn Coaching:</b> Turn your projects into compelling public case studies that attract recruiters.</li></ul></li></ol>'
+          },
+          {
+            q: 'Who is hiring in India, what do they pay, and are global jobs possible?',
+            a: '<ul><li><b>Hiring Companies in India:</b> Flipkart, Target, American Express, Swiggy, Fractal Analytics, Boston Consulting Group, McKinsey QuantumBlack, and global GCCs.</li><li><b>Compensation Range:</b> Analyst (0–3 YOE): <b>₹10 – ₹20 LPA</b>; Data Scientist (3–6 YOE): <b>₹22 – ₹42 LPA</b>; Principal Data Scientist (7+ YOE): <b>₹45 – ₹85 LPA</b>.</li><li><b>Global Opportunities:</b> High demand for remote analytics, quantitative modeling, and risk analytics across US/EU financial institutions.</li><li><b>Scaler Career Assistance:</b> Scaler connects you directly with recruitment leads across analytics consultancies, startups, and multinational GCCs.</li></ul>'
+          },
+          {
+            q: 'Why is the course built this way, and can learners get job-ready sooner?',
+            a: 'The curriculum is built modularly: <b>Python &amp; SQL Foundations &rarr; Business Analytics &rarr; Statistics &amp; A/B Testing &rarr; Machine Learning &rarr; MLOps &amp; GenAI</b>.<br><br><div class="faq-highlight"><b>Accelerated Job-Readiness with Scaler:</b> Learners become job-ready for high-demand Data Analyst and Analytics Consultant roles by <b>Month 4–5</b>, and advance into Senior ML Scientist roles upon completing the machine learning specialization.</div>'
+          }
+        ]
+      },
+      'P4_AIML': {
+        name: 'Program 4: AI & Machine Learning / Agentic AI Engineering',
+        faqs: [
+          {
+            q: 'Why is Agentic AI & ML a good career, and why now?',
+            a: 'The global AI race has evolved from conversational chat interfaces to <b>autonomous multi-agent systems</b> that write code, analyze data, and orchestrate complex enterprise operations. Organizations face an extreme deficit of engineers who understand deep learning architectures, LLM fine-tuning, production RAG, and agentic frameworks (LangGraph, CrewAI, AutoGen). Salaries for specialized AI engineers currently outpace general software roles by 30% to 50%.<br><br><div class="faq-highlight"><b>How Scaler Prepares You:</b> Scaler provides hands-on GPU cloud labs and live multi-agent architectural training so you master production AI systems rather than superficial prompting.</div>'
+          },
+          {
+            q: 'Who can become an AI Engineer, where do they start, and how far can they grow?',
+            a: '<ul><li><b>Who Can Join:</b> Software engineers, backend developers, data engineers, and tech professionals looking to lead the next decade of AI innovation.</li><li><b>Where They Start:</b> AI Engineer or Applied ML Engineer building RAG systems, model evaluation pipelines, and fine-tuned domain models.</li><li><b>Growth Path:</b> AI Engineer &rarr; Senior AI Architect &rarr; Principal Agentic Systems Engineer &rarr; Chief AI Officer (CAIO).</li><li><b>Scaler Track Personalization:</b> Diagnostic assessment determines whether you begin with mathematical &amp; Python fundamentals or accelerate straight into Deep Learning and Agentic Orchestration.</li></ul>'
+          },
+          {
+            q: 'What do companies test in AI & Agentic AI interviews?',
+            a: 'Leading AI teams (Microsoft AI, Adobe, Nvidia ecosystem, persistent AI labs, and high-growth AI startups) test:<ul><li><b>Mathematical Foundations:</b> Vector calculus, linear algebra, attention mechanisms, and transformer architectures.</li><li><b>Production RAG Design:</b> Chunking algorithms, hybrid dense/sparse search, vector database indexing, re-ranking, and hallucination reduction.</li><li><b>Agentic Orchestration:</b> Multi-agent state machines, tool-calling loops, reflection patterns, and memory management.</li><li><b>LLMOps &amp; Fine-Tuning:</b> Parameter-efficient fine-tuning (LoRA/QLoRA), model evaluation (Ragas), latency optimization, and security guardrails.</li><li><b>How Scaler Prepares You:</b> Live architectural whiteboard interviews and take-home project evaluations reviewed 1:1 by senior AI research scientists.</li></ul>'
+          },
+          {
+            q: 'What do learners build, and what skills do they gain?',
+            a: 'Learners develop cutting-edge artificial intelligence systems:<ul><li>Autonomous multi-agent collaborative software engineering and debugging team.</li><li>Enterprise multimodal RAG platform indexing millions of complex financial and technical PDFs with sub-second retrieval.</li><li>Fine-tuned open-source LLM (Llama 3/Mistral) specialized for legal/medical domain reasoning with GPU quantization.</li><li>Computer vision and natural language processing pipelines for automated multimodal classification.</li><li><b>Scaler Lab Infrastructure:</b> Dedicated cloud GPU instances provided for model training, fine-tuning, and inference benchmarking, supported by 15-minute live TA assistance.</li></ul>'
+          },
+          {
+            q: 'What are our five unique strengths, and how do we compare?',
+            a: '<div class="faq-highlight"><b>Five Unique Scaler Strengths:</b></div><ol style="margin-left: 20px;"><li><b>2026 Agentic Architecture Focus:</b> Deep, hands-on mastery of autonomous agents and multi-agent coordination, not superficial prompting.</li><li><b>Dedicated Cloud GPU Infrastructure:</b> Real hands-on experience training, fine-tuning, and hosting models on high-performance cloud GPUs.</li><li><b>Production System Scalability:</b> Teaches how to scale AI applications to enterprise traffic while minimizing latency and token costs.</li><li><b>World-Class Faculty:</b> Classes taught by AI research scientists and senior engineering practitioners from premier AI organizations.</li><li><b>Comprehensive Extra Career Services:</b> <ul><li><b>1:1 AI Architect Mentorship:</b> Personalized guidance from AI leaders actively deploying LLMs in production.</li><li><b>15-Min Live Doubt Resolution:</b> Fast 1:1 resolution for complex tensor math, CUDA errors, and LangGraph bugs.</li><li><b>Dedicated Placement Cell:</b> Access to premier tech companies and US AI startups building specialized AI engineering hubs in India.</li><li><b>10,000+ Alumni Network:</b> Lifelong peer support across the world’s leading technology companies.</li></ul></li></ol>'
+          },
+          {
+            q: 'Who is hiring in India, what do they pay, and are global jobs possible?',
+            a: '<ul><li><b>Hiring Companies in India:</b> Microsoft AI, Adobe, Persistent, Infosys Topaz, Accenture AI Labs, and top US AI unicorn offshore centers in Bengaluru and Hyderabad.</li><li><b>Compensation Range:</b> AI Engineer (1–3 YOE): <b>₹18 – ₹35 LPA</b>; Senior AI Architect (4–8 YOE): <b>₹38 – ₹75 LPA</b>; Principal AI Lead (8+ YOE): <b>₹80 LPA – ₹1.5 Cr+</b>.</li><li><b>Global Remote Market:</b> Unprecedented surge in US/EU remote contracts ($120k – $220k USD) for engineers skilled in production RAG and multi-agent workflows.</li><li><b>Scaler Career Assistance:</b> Direct referrals to fast-growing AI startups and GCCs with portfolio review sessions to highlight your production RAG and Agentic systems.</li></ul>'
+          },
+          {
+            q: 'Why is the course built this way, and can learners get job-ready sooner?',
+            a: 'The course progresses purposefully: <b>Python &amp; Math Foundations &rarr; Applied Machine Learning &rarr; Deep Learning &amp; Transformers &rarr; Production RAG &rarr; Multi-Agent Systems &rarr; LLMOps &amp; Security</b>.<br><br><div class="faq-highlight"><b>Accelerated Job-Readiness with Scaler:</b> Learners become qualified for Applied AI Developer and RAG Engineer positions by <b>Month 5–6</b>, while advanced cognitive architectures build senior architectural mastery.</div>'
+          }
+        ]
+      },
+      'P5_DEVOPS': {
+        name: 'Program 5: DevOps, Cloud & Platform Engineering',
+        faqs: [
+          {
+            q: 'Why is DevOps & Cloud a good career, and why now?',
+            a: 'Every enterprise software company lives and dies by its cloud infrastructure. With distributed microservices, multi-cloud architectures, and compute-heavy AI workloads, companies cannot afford downtime or runaway cloud bills. <b>Platform Engineers and SREs</b> who automate infrastructure via code, orchestrate Kubernetes clusters, and guarantee 99.99% system availability enjoy tremendous job security and compensation leverage.<br><br><div class="faq-highlight"><b>How Scaler Prepares You:</b> Scaler trains you on real AWS cloud accounts with live VPCs and automated CI/CD pipelines, giving you real operational confidence.</div>'
+          },
+          {
+            q: 'Who can become a DevOps Engineer, where do they start, and how far can they grow?',
+            a: '<ul><li><b>Who Can Join:</b> System administrators, tech support engineers, QA/automation engineers, database admins, and developers wanting infrastructure specialization.</li><li><b>Where They Start:</b> Cloud Support / Associate DevOps Engineer managing CI/CD pipelines, Docker containers, and cloud monitoring.</li><li><b>Growth Path:</b> DevOps Engineer &rarr; Site Reliability Engineer (SRE) &rarr; Cloud Infrastructure Architect &rarr; Head of Platform Engineering.</li><li><b>Scaler Track Personalization:</b> Candidates with non-dev backgrounds start with Linux, Networking &amp; Python automation before advancing into Kubernetes, Terraform, and MLOps.</li></ul>'
+          },
+          {
+            q: 'What do companies test in DevOps & Cloud interviews?',
+            a: 'Leading tech enterprises (Cisco, VMware, Red Hat, AWS partners, and major FinTechs) evaluate 4 core pillars:<ul><li><b>Linux Internals &amp; Networking:</b> Process management, kernel namespaces, networking protocols (TCP/UDP, DNS, HTTP/3), and bash automation.</li><li><b>Containerization &amp; Kubernetes:</b> Docker multi-stage optimization, Kubernetes pod lifecycle, ingress controllers, network policies, and Helm charts.</li><li><b>Infrastructure as Code (IaC):</b> Modular Terraform architecture, state locking, drift detection, and multi-region AWS design.</li><li><b>CI/CD, Monitoring &amp; Security:</b> GitHub Actions, ArgoCD GitOps, Prometheus &amp; Grafana observability, and DevSecOps vulnerability scanning.</li><li><b>How Scaler Prepares You:</b> Scaler mentors simulate live incident triage scenarios where you diagnose broken deployments and defend your architectural choices under pressure.</li></ul>'
+          },
+          {
+            q: 'What do learners build, and what skills do they gain?',
+            a: 'Learners engineer resilient, production-grade cloud environments:<ul><li>Multi-region high-availability Kubernetes cluster on AWS provisioned entirely through Terraform and GitOps (ArgoCD).</li><li>Automated zero-downtime CI/CD deployment pipeline with canary releases and automated rollback triggers.</li><li>Centralized enterprise observability and alerting stack using Prometheus, Grafana, and Loki for real-time anomaly detection.</li><li>DevSecOps security pipeline automating image vulnerability scanning, IAM least-privilege policies, and secret management.</li><li><b>Scaler Support &amp; Cloud Labs:</b> Real cloud environments provided with zero simulation, backed by 15-minute live TA support on tricky cloud networking and container errors.</li></ul>'
+          },
+          {
+            q: 'What are our five unique strengths, and how do we compare?',
+            a: '<div class="faq-highlight"><b>Five Unique Scaler Strengths:</b></div><ol style="margin-left: 20px;"><li><b>100% Real Cloud Infrastructure:</b> Build on real AWS accounts with live VPCs, clusters, and load balancers—not simulated sandboxes.</li><li><b>Deep Kubernetes Mastery:</b> Multiple intensive months dedicated to production Kubernetes, service meshes, and disaster recovery.</li><li><b>DevOps Meets AI &amp; MLOps:</b> Unique elective modules covering MLOps pipelines and GPU cluster management for AI models.</li><li><b>Production Incident War-Rooms:</b> Live troubleshooting simulations where mentors introduce chaotic cluster failures for real-time triage.</li><li><b>Comprehensive Extra Career Services:</b> <ul><li><b>1:1 SRE / Cloud Architect Mentorship:</b> Direct coaching from senior cloud infrastructure leads.</li><li><b>15-Min Live Doubt Resolution:</b> Instant 1:1 help on Terraform scripts and Kubernetes manifests.</li><li><b>Dedicated Placement Cell:</b> Direct introductions to 900+ hiring partners hiring for DevOps, SRE, and Cloud Architect roles.</li><li><b>Certification Alignment:</b> Fully prepares you for AWS Certified Solutions Architect and Certified Kubernetes Administrator (CKA).</li></ul></li></ol>'
+          },
+          {
+            q: 'Who is hiring in India, what do they pay, and are global jobs possible?',
+            a: '<ul><li><b>Hiring Companies in India:</b> Cisco, VMware, Amazon AWS, Microsoft Azure, Red Hat, Paytm, PhonePe, Jio, Infosys Cloud, and global FinTech GCCs.</li><li><b>Compensation Range:</b> DevOps Engineer (1–3 YOE): <b>₹12 – ₹24 LPA</b>; Senior DevOps/SRE (4–7 YOE): <b>₹26 – ₹50 LPA</b>; Cloud Architect / Staff SRE (8+ YOE): <b>₹55 – ₹90 LPA</b>.</li><li><b>Global Opportunities:</b> Cloud engineering is inherently location-agnostic; high demand for remote SRE and 24/7 follow-the-sun operations in the US and Europe.</li><li><b>Scaler Career Assistance:</b> Placement team connects you directly with cloud consulting practices, enterprise SaaS companies, and offshore SRE hubs.</li></ul>'
+          },
+          {
+            q: 'Why is the course built this way, and can learners get job-ready sooner?',
+            a: 'The curriculum is built progressively: <b>Python &amp; Linux Internals &rarr; DevOps Toolchain &amp; CI/CD &rarr; AWS Cloud Architecture &rarr; Kubernetes Orchestration &rarr; Observability &amp; Security &rarr; MLOps &amp; AI Systems</b>.<br><br><div class="faq-highlight"><b>Accelerated Job-Readiness with Scaler:</b> Learners become hireable for Cloud Support and Junior DevOps positions within <b>4–5 months</b>, while advanced Kubernetes and IaC modules qualify them for senior high-paying roles.</div>'
+          }
+        ]
+      }
+    };
+
+    let activeFaqProgramKey = 'P1_ACADEMY';
+
+    function resolveFaqProgramKey(progStr) {
+      const s = String(progStr || '').toLowerCase();
+      if (s.includes('devops') || s.includes('cloud') || s.includes('platform') || s.includes('p5') || s.includes('program 5')) return 'P5_DEVOPS';
+      if (s.includes('agentic') || s.includes('aiml') || s.includes('p4') || s.includes('program 4')) return 'P4_AIML';
+      if (s.includes('fde') || s.includes('forward deployed') || s.includes('p3') || s.includes('program 3')) return 'P3_FDE';
+      if (s.includes('dsml') || s.includes('data science') || s.includes('p2') || s.includes('program 2')) return 'P2_DSML';
+      return 'P1_ACADEMY';
+    }
+
+    function populateRecommendedFaqSelector(lead, activeTab) {
+      const selector = document.getElementById('faq-program-selector');
+      if (!selector) return;
+      if (!lead) {
+        selector.innerHTML = '';
+        return;
+      }
+
+      const prim = lead.primary || {};
+      const fall = lead.fallback || {};
+
+      const primKey = resolveFaqProgramKey(prim.program || prim.catalog_code);
+      const fallKey = resolveFaqProgramKey(fall.program || fall.catalog_code);
+
+      const primName = (prim.program || prim.catalog_code || 'Primary Program').split('(')[0].trim();
+      const fallName = (fall.program || fall.catalog_code || 'Fallback Program').split('(')[0].trim();
+
+      let html = `
+        <button class="faq-prog-btn ${activeTab === 'primary' ? 'active' : ''}" id="faq-pill-primary" onclick="switchCurriculumTab('primary')">
+          Recommended: ${primName}
+        </button>
+      `;
+
+      if (fallKey && fallKey !== primKey) {
+        html += `
+          <button class="faq-prog-btn ${activeTab === 'fallback' ? 'active' : ''}" id="faq-pill-fallback" onclick="switchCurriculumTab('fallback')">
+            Fallback: ${fallName}
+          </button>
+        `;
+      }
+
+      selector.innerHTML = html;
+    }
+
+    function switchFaqProgram(progKey) {
+      if (!PROGRAM_STRATEGIC_FAQS[progKey]) progKey = 'P1_ACADEMY';
+      activeFaqProgramKey = progKey;
+
+      const progTitleEl = document.getElementById('faq-active-program-name');
+      const progData = PROGRAM_STRATEGIC_FAQS[progKey];
+      if (progTitleEl && progData) {
+        progTitleEl.innerText = progData.name.split(':')[1] ? progData.name.split(':')[1].trim() : progData.name;
+      }
+
+      renderStrategicFaqs(progKey);
+    }
+
+    function toggleFaqItem(idx) {
+      const item = document.getElementById(`faq-item-${idx}`);
+      if (item) {
+        item.classList.toggle('open');
+      }
+    }
+
+    function renderStrategicFaqs(progKey) {
+      const container = document.getElementById('faq-accordion-list');
+      if (!container) return;
+
+      const progData = PROGRAM_STRATEGIC_FAQS[progKey];
+      if (!progData || !progData.faqs) {
+        container.innerHTML = `<div class="empty-note">No notes are available for this program.</div>`;
+        return;
+      }
+
+      container.innerHTML = progData.faqs.map((item, idx) => {
+        // Open the first question by default
+        const isOpen = (idx === 0) ? 'open' : '';
+        return `
+          <div class="faq-item-card ${isOpen}" id="faq-item-${idx}">
+            <button class="faq-question-btn" onclick="toggleFaqItem(${idx})">
+              <div class="faq-q-left">
+                <span class="faq-q-badge">Q${idx + 1}</span>
+                <span>${item.q}</span>
+              </div>
+              <span class="faq-toggle-icon"></span>
+            </button>
+            <div class="faq-answer-body">
+              ${item.a}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderMarketComparison(progKey) {
+      const data = MARKET_PROGRAM_COMPARISONS[progKey] || MARKET_PROGRAM_COMPARISONS['P1_ACADEMY'];
+      const titleEl = document.getElementById('comp-active-program-name');
+      const thScalerEl = document.getElementById('comp-th-scaler');
+      const tbody = document.getElementById('market-comp-tbody');
+
+      if (titleEl) {
+        titleEl.innerText = data.name;
+      }
+      if (thScalerEl) {
+        thScalerEl.innerHTML = `Scaler Advantage (${data.name.split(':')[1] ? data.name.split(':')[1].trim() : data.name})`;
+      }
+      if (tbody && data.dimensions) {
+        tbody.innerHTML = data.dimensions.map(d => `
+          <tr>
+            <td class="dim-cell">${d.dim}</td>
+            <td class="scaler-cell">
+              <div class="comp-badge-scaler">Scaler Advantage</div>
+              <div>${d.scaler}</div>
+            </td>
+            <td class="market-cell">
+              <div class="comp-badge-market">Market Limitation</div>
+              <div>${d.market}</div>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    async function loadCurriculumCatalog() {
+      try {
+        const res = await fetch('/api/curriculum-catalog');
+        const data = await res.json();
+        if (data.status === 'success' && data.catalog) {
+          curriculumCatalog = data.catalog;
+        }
+      } catch (e) {
+        console.warn('Preload curriculum catalog warning:', e);
+      }
+    }
+    loadCurriculumCatalog();
+
+    function resolveCurriculumModules(progName, trackName) {
+      const p = (progName || '').toLowerCase();
+      const t = (trackName || '').toLowerCase();
+
+      if (p.includes('academy') || p.includes('software')) {
+        if (t.includes('beginner') || t.includes('foundation')) return curriculumCatalog['P1_ACADEMY_BEGINNER'] || [];
+        if (t.includes('advanced') || t.includes('system design') || t.includes('architecture') || t.includes('scalability')) return curriculumCatalog['P1_ACADEMY_ADVANCED'] || [];
+        return curriculumCatalog['P1_ACADEMY_INTERMEDIATE'] || [];
+      } else if (p.includes('dsml') || p.includes('data science')) {
+        if (t.includes('beginner') || t.includes('foundation') || t.includes('python')) return curriculumCatalog['P2_DSML_BEGINNER'] || [];
+        return curriculumCatalog['P2_DSML_INTERMEDIATE'] || [];
+      } else if (p.includes('fde') || p.includes('forward deployed')) {
+        return curriculumCatalog['P3_FDE'] || [];
+      } else if (p.includes('agentic') || p.includes('aiml') || p.includes('machine learning')) {
+        if (t.includes('beginner') || t.includes('foundation') || t.includes('math prep')) return curriculumCatalog['P4_AIML_BEGINNER'] || [];
+        return curriculumCatalog['P4_AIML_ADVANCED'] || [];
+      } else if (p.includes('devops') || p.includes('cloud') || p.includes('platform')) {
+        return curriculumCatalog['P5_DEVOPS'] || [];
+      }
+      return [];
+    }
+
+    function setEvalStage(stageNum, state) {
+      const el = document.getElementById(`stage-${stageNum}`);
+      const icon = document.getElementById(`stage-icon-${stageNum}`);
+      if (!el) return;
+      el.classList.remove('pending', 'active', 'completed');
+      el.classList.add(state);
+      if (icon) icon.innerText = '';
+    }
+
+    function setEvalProgress(pct, statusText) {
+      const fill = document.getElementById('eval-progress-fill');
+      const pctEl = document.getElementById('eval-progress-pct');
+      const label = document.getElementById('eval-status-label');
+      if (fill) fill.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+      if (pctEl) pctEl.innerText = `${Math.round(pct)}%`;
+      if (statusText && label) label.innerText = statusText;
+    }
+
+    function resetEvaluationStepper() {
+      const container = document.getElementById('eval-progress-container');
+      const pulse = document.getElementById('eval-pulse');
+      const pctEl = document.getElementById('eval-progress-pct');
+      if (container) container.style.display = 'block';
+      if (pulse) pulse.classList.remove('success');
+      if (pctEl) pctEl.classList.remove('success');
+      for (let i = 1; i <= 5; i++) {
+        setEvalStage(i, 'pending');
+      }
+      setEvalProgress(4, 'Reading file');
+    }
+
+    async function pollEmailLookup(start) {
+      setEvalStage(1, 'completed'); setEvalStage(2, 'active');
+      const total = start.total || 1;
+      setEvalProgress(8, `Looking up ${total.toLocaleString()} emails in Metabase`);
+      for (;;) {
+        await new Promise((r) => setTimeout(r, 2000));
+        let j;
+        try {
+          const r = await fetch('/api/upload-job/' + start.job_id);
+          j = await r.json();
+        } catch (e) {
+          setEvalProgress(0, 'Lost connection while looking up emails');
+          notify('Lookup failed: could not reach the server.');
+          return null;
+        }
+        if (j.status === 'processing') {
+          const pct = 8 + 80 * Math.min(1, (j.done || 0) / total);
+          setEvalProgress(pct, j.message || 'Looking up emails in Metabase');
+          continue;
+        }
+        if (j.status === 'success') return j;
+        setEvalProgress(0, 'Lookup error');
+        notify('Lookup failed: ' + (j.detail || 'unknown error'));
+        return null;
+      }
+    }
+
+    function resetDropzone() {
+      const t = document.getElementById('dropzone-status-title');
+      if (t) t.innerText = 'Drop a CSV or XLSX file here';
+      const sub = document.getElementById('dropzone-status-sub');
+      if (sub) sub.innerText = 'Up to 10,000 rows. Needs an email column. Full Metabase data is evaluated as it is. If the file has only emails, the lead details are fetched from Metabase.';
+      const input = document.getElementById('file-upload-input');
+      if (input) input.value = '';
+    }
+
+    function prettyInterest(raw) {
+      const key = String(raw || '').trim().toLowerCase().replace(/[\s-]+/g, '_');
+      const map = { academy: 'Academy', data_science: 'Data Science', datascience: 'Data Science', ai_ml: 'AI and ML', devops: 'DevOps', fde: 'Forward Deployed Engineering', cyber_security: 'Cyber security', others: 'Other' };
+      return map[key] || String(raw || '').replace(/\s*\([^)]*\)\s*$/, '').replace(/_/g, ' ').trim();
+    }
+
+    function renderUploadWarnings(warnings) {
+      let box = document.getElementById('upload-warnings');
+      if (!box) {
+        const anchor = document.getElementById('dropzone-status-sub');
+        if (!anchor) return;
+        box = document.createElement('div');
+        box.id = 'upload-warnings';
+        box.setAttribute('onclick', 'event.stopPropagation()');
+        box.className = 'notice';
+        anchor.insertAdjacentElement('afterend', box);
+      }
+      if (!warnings || !warnings.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
+      box.innerHTML = '<div class="notice-title">Please check your file</div><ul>'
+        + warnings.map((w) => '<li>' + esc(w.message) + '</li>').join('') + '</ul>';
+      box.style.display = 'block';
+    }
+
+    async function handleFileChosen(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (file.size > 25 * 1024 * 1024) {
+        notify(`File "${file.name}" is ${(file.size / (1024 * 1024)).toFixed(1)} MB, which exceeds the 25 MB limit.\n\nUploads are limited to 10,000 rows per file. Please split larger datasets into separate files.`);
+        event.target.value = '';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      resetEvaluationStepper();
+      renderUploadWarnings([]);
+      const preTitleEl = document.getElementById('dropzone-status-title');
+      if (preTitleEl) preTitleEl.innerText = `Evaluating ${file.name}`;
+      const preSubEl = document.getElementById('dropzone-status-sub');
+      if (preSubEl) preSubEl.innerText = 'This can take a few seconds for large files.';
+
+      let currentPct = 6;
+      const startTime = Date.now();
+
+      // Simulated progressive advancement through the 5 real evaluation stages
+      const progressTimer = setInterval(() => {
+        const elapsed = (Date.now() - startTime) / 1000; // seconds
+
+        if (elapsed < 1.2) {
+          currentPct = Math.min(20, 6 + elapsed * 12);
+          setEvalStage(1, 'active');
+          setEvalProgress(currentPct, `Reading ${file.name}`);
+        } else if (elapsed < 3.5) {
+          setEvalStage(1, 'completed');
+          setEvalStage(2, 'active');
+          currentPct = Math.min(42, 20 + (elapsed - 1.2) * 10);
+          setEvalProgress(currentPct, 'Checking eligibility and track level');
+        } else if (elapsed < 7.5) {
+          setEvalStage(1, 'completed');
+          setEvalStage(2, 'completed');
+          setEvalStage(3, 'active');
+          currentPct = Math.min(68, 42 + (elapsed - 3.5) * 6.5);
+          setEvalProgress(currentPct, 'Matching retention data');
+        } else if (elapsed < 14) {
+          setEvalStage(1, 'completed');
+          setEvalStage(2, 'completed');
+          setEvalStage(3, 'completed');
+          setEvalStage(4, 'active');
+          currentPct = Math.min(88, 68 + (elapsed - 7.5) * 3);
+          setEvalProgress(currentPct, 'Matching curriculum');
+        } else {
+          setEvalStage(1, 'completed');
+          setEvalStage(2, 'completed');
+          setEvalStage(3, 'completed');
+          setEvalStage(4, 'completed');
+          setEvalStage(5, 'active');
+          currentPct = Math.min(96, 88 + (elapsed - 14) * 0.4);
+          setEvalProgress(currentPct, 'Preparing recommendations');
+        }
+      }, 250);
+
+      try {
+        const res = await fetch('/api/upload-csv', { method: 'POST', body: formData });
+        clearInterval(progressTimer);
+        let data = {};
+        try {
+          data = await res.json();
+        } catch (jsonErr) {
+          data = { detail: `HTTP ${res.status}: ${res.statusText || 'Server Error'}` };
+        }
+
+        if (!res.ok) {
+          const errDetail = data?.detail || `HTTP ${res.status}: ${res.statusText}`;
+          setEvalProgress(0, `Upload error: ${errDetail}`);
+          resetDropzone();
+          notify('Upload failed: ' + errDetail);
+          return;
+        }
+
+        if (data.status === 'processing' && data.job_id) {
+          // email-only file: the server looks the leads up in Metabase in the background
+          data = await pollEmailLookup(data);
+          if (!data) { resetDropzone(); return; }
+        }
+
+        if (data.status === 'success' && data.leads && data.leads.length > 0) {
+          allLeads = data.leads;
+          if (data.curriculum_catalog) {
+            curriculumCatalog = data.curriculum_catalog;
+          }
+
+          // Complete all 5 stages with celebration
+          for (let i = 1; i <= 5; i++) {
+            setEvalStage(i, 'completed');
+          }
+          setEvalProgress(100, `Evaluation complete: ${(data.total || data.leads.length).toLocaleString()} leads loaded`);
+
+          const pulse = document.getElementById('eval-pulse');
+          const pctEl = document.getElementById('eval-progress-pct');
+          if (pulse) pulse.classList.add('success');
+          if (pctEl) pctEl.classList.add('success');
+
+          const titleEl = document.getElementById('dropzone-status-title');
+          if (titleEl) titleEl.innerText = `Evaluated ${file.name}`;
+          const countNotice = (data.total && data.total > data.leads.length)
+            ? `${data.total.toLocaleString()} leads evaluated. The first ${data.leads.length.toLocaleString()} are shown and the rest load in the background.`
+            : `${(data.total || data.leads.length).toLocaleString()} leads evaluated.`;
+          const subEl = document.getElementById('dropzone-status-sub');
+          if (subEl) subEl.innerText = countNotice;
+          renderUploadWarnings(data.warnings);
+
+          const statTotalEl = document.getElementById('stat-total');
+          if (statTotalEl) statTotalEl.innerText = (data.total || data.leads.length).toLocaleString();
+          const tblTotalEl = document.getElementById('table-total-count');
+          if (tblTotalEl) tblTotalEl.innerText = (data.total || data.leads.length).toLocaleString();
+
+          // Save evaluated data in localStorage (save first 3,000 to stay safely within browser 5MB quota)
+          try {
+            const cacheSample = (data.leads && data.leads.length > 3000) ? data.leads.slice(0, 3000) : data.leads;
+            localStorage.setItem('scaler_all_leads', JSON.stringify(cacheSample));
+            if (data.curriculum_catalog) {
+              localStorage.setItem('scaler_curriculum_catalog', JSON.stringify(data.curriculum_catalog));
+            }
+          } catch (e) {
+            console.warn('Storage save quota reached (skipped offline cache):', e);
+          }
+          currentPage = 1;
+          totalServerLeadsCount = data.total || data.leads.length;
+          applyFilters();
+          updateLoadMoreButtonVisibility();
+          streamRemainingLeadsInBackground();
+
+          // Automatically open the dashboard directly upon analysis completion!
+          setTimeout(() => {
+            showAnalysisView();
+          }, 600);
+
+        } else {
+          clearInterval(progressTimer);
+          setEvalProgress(0, 'Upload or evaluation error');
+          resetDropzone();
+          notify('Upload failed: ' + (data.detail || 'Could not parse leads'));
+        }
+      } catch (err) {
+        clearInterval(progressTimer);
+        setEvalProgress(0, 'Server error during evaluation');
+        console.error(err);
+        resetDropzone();
+        notify('Server error while evaluating CSV: ' + (err && err.message ? err.message : String(err)));
+      }
+    }
+
+    let currentView = 'upload';
+
+    function navigateView(dir) {
+      if (dir === 'back') {
+        showUploadView();
+      } else if (dir === 'forward') {
+        showAnalysisView();
+      }
+    }
+
+    function updateNavArrows() {
+      const controls = document.getElementById('nav-history-controls');
+      const btnBack = document.getElementById('nav-btn-back');
+      const btnFwd = document.getElementById('nav-btn-forward');
+
+      const hasLeads = (allLeads && allLeads.length > 0);
+      if (controls) {
+        controls.style.display = hasLeads ? 'flex' : 'none';
+      }
+      if (btnBack) {
+        btnBack.disabled = (currentView === 'upload');
+      }
+      if (btnFwd) {
+        btnFwd.disabled = (currentView === 'analysis' || !hasLeads);
+      }
+    }
+
+    function showUploadView() {
+      currentView = 'upload';
+      try { sessionStorage.setItem('scaler_current_view', 'upload'); } catch (e) {}
+      const uploadView = document.getElementById('view-upload');
+      const analysisView = document.getElementById('view-analysis');
+      const filterStrip = document.getElementById('nav-filter-strip');
+      if (uploadView) uploadView.style.display = 'block';
+      if (analysisView) analysisView.style.display = 'none';
+      if (filterStrip) filterStrip.style.display = 'none';
+      const navSearch = document.getElementById('nav-search-box');
+      if (navSearch) navSearch.style.display = 'none';
+
+      updateNavArrows();
+    }
+
+    function showAnalysisView() {
+      currentView = 'analysis';
+      try { sessionStorage.setItem('scaler_current_view', 'analysis'); } catch (e) {}
+      const uploadView = document.getElementById('view-upload');
+      const analysisView = document.getElementById('view-analysis');
+      const filterStrip = document.getElementById('nav-filter-strip');
+      if (uploadView) uploadView.style.display = 'none';
+      if (analysisView) analysisView.style.display = 'block';
+      if (filterStrip) filterStrip.style.display = 'flex';
+      const navSearch = document.getElementById('nav-search-box');
+      if (navSearch) navSearch.style.display = 'flex';
+      renderTable();
+      updateNavArrows();
+    }
+
+    function navigateCandidate(delta) {
+      if (!allLeads || allLeads.length === 0 || !activeLeadData) return;
+      const list = (filteredLeads && filteredLeads.length > 0) ? filteredLeads : allLeads;
+      const activeKey = activeLeadData._uid || activeLeadData.lead_id || (activeLeadData.person && activeLeadData.person.email);
+      const curIdx = list.findIndex(l => (l._uid || l.lead_id || (l.person && l.person.email)) === activeKey);
+      if (curIdx === -1) return;
+      const newIdx = curIdx + delta;
+      if (newIdx >= 0 && newIdx < list.length) {
+        activeLeadData = list[newIdx];
+        openModalWithLead(list[newIdx]);
+      }
+    }
+
+    function openAnalysisInNewBrowserTab() {
+      const analysisUrl = window.location.origin + window.location.pathname + '?tab=analysis';
+      const newWin = window.open(analysisUrl, '_blank');
+      if (newWin) newWin.focus();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      try { switchEvaluationMode(sessionStorage.getItem('scaler_home_mode') === 'csv' ? 'csv' : 'email'); } catch (e) {}
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const savedActiveLeadId = sessionStorage.getItem('scaler_active_lead_id');
+      const savedActiveLeadJson = sessionStorage.getItem('scaler_active_lead_json');
+      const savedView = sessionStorage.getItem('scaler_current_view');
+
+      // Fetch all evaluated leads from server session
+      fetch('/api/csv-stream/leads')
+        .then(res => res.json())
+        .then(data => {
+          let serverLeads = (data.status === 'success' && data.leads) ? data.leads : [];
+          
+          // Check local storage backup if server is empty
+          if (serverLeads.length === 0) {
+            try {
+              const localCached = JSON.parse(localStorage.getItem('scaler_all_leads') || '[]');
+              if (localCached && localCached.length > 0) {
+                serverLeads = localCached;
+              }
+            } catch (e) {}
+          }
+
+          if (serverLeads && serverLeads.length > 0) {
+            allLeads = serverLeads;
+            filteredLeads = [...allLeads];
+            totalServerLeadsCount = data.total || allLeads.length;
+            const cnt = (totalServerLeadsCount || allLeads.length).toLocaleString();
+            const statTotal = document.getElementById('stat-total');
+            if (statTotal) statTotal.innerText = cnt;
+            const tblCount = document.getElementById('table-total-count');
+            if (tblCount) tblCount.innerText = cnt;
+            renderTable();
+            updateLoadMoreButtonVisibility();
+            streamRemainingLeadsInBackground();
+
+            if (urlParams.get('view') !== 'upload' || savedView === 'analysis' || savedActiveLeadJson || savedActiveLeadId) {
+              showAnalysisView();
+            }
+
+            // Restore active lead modal if counselor had an open dossier before refresh
+            let restored = false;
+            if (savedActiveLeadId) {
+              const matched = allLeads.find(l => (l._uid && l._uid === savedActiveLeadId) || (l.lead_id && l.lead_id === savedActiveLeadId) || (l.person && l.person.email === savedActiveLeadId));
+              if (matched) {
+                restored = true;
+                setTimeout(() => { openModalWithLead(matched); }, 200);
+              }
+            }
+            if (!restored && savedActiveLeadJson) {
+              try {
+                const parsed = JSON.parse(savedActiveLeadJson);
+                if (parsed && parsed.primary) {
+                  setTimeout(() => { openModalWithLead(parsed); }, 200);
+                }
+              } catch (e) {}
+            }
+          } else {
+            // If server list has 0 items, but counselor had a single dossier open, restore it
+            if (savedActiveLeadJson) {
+              try {
+                const parsed = JSON.parse(savedActiveLeadJson);
+                if (parsed && parsed.primary) {
+                  allLeads = [parsed];
+                  filteredLeads = [parsed];
+                  renderTable();
+                  showAnalysisView();
+                  setTimeout(() => { openModalWithLead(parsed); }, 200);
+                  return;
+                }
+              } catch (e) {}
+            }
+            showUploadView();
+          }
+        })
+        .catch(() => {
+          // If offline/error, attempt localStorage recovery
+          try {
+            const localCached = JSON.parse(localStorage.getItem('scaler_all_leads') || '[]');
+            if (localCached && localCached.length > 0) {
+              allLeads = localCached;
+              filteredLeads = [...allLeads];
+              renderTable();
+              showAnalysisView();
+              if (savedActiveLeadId) {
+                const matched = allLeads.find(l => (l._uid && l._uid === savedActiveLeadId) || (l.lead_id && l.lead_id === savedActiveLeadId) || (l.person && l.person.email === savedActiveLeadId));
+                if (matched) openModalWithLead(matched);
+              }
+              return;
+            }
+          } catch (e) {}
+          if (savedActiveLeadJson) {
+            try {
+              const parsed = JSON.parse(savedActiveLeadJson);
+              if (parsed && parsed.primary) {
+                allLeads = [parsed];
+                filteredLeads = [parsed];
+                renderTable();
+                showAnalysisView();
+                openModalWithLead(parsed);
+                return;
+              }
+            } catch (e) {}
+          }
+          showUploadView();
+        });
+
+      updateNavArrows();
+    });
+
+    const CANONICAL_PERSONA_MAP = {
+      'SWE_BACKEND': 'Software Engineering (Backend/FullStack)',
+      'DEVOPS_CLOUD': 'DevOps & Cloud Platform',
+      'DATA_ANALYST': 'Data Science & Analytics',
+      'QA_SDET': 'QA / SDET / Testing',
+      'SYSTEMS_ENG': 'Systems & Embedded Engineering',
+      'FRONTEND': 'Frontend Engineering',
+      'LEADERSHIP': 'Engineering Leadership / Management',
+      'IT_SERVICES': 'IT Services & Maintenance',
+      'NON_TECH': 'Non-Tech / Career Switcher'
+    };
+
+    function getDisplayPersona(p) {
+      if (!p) return 'General Tech';
+      let norm = (p.normalized_persona || '').trim();
+      if (norm) {
+        if (CANONICAL_PERSONA_MAP[norm]) return CANONICAL_PERSONA_MAP[norm];
+        return norm;
+      }
+      let key = (p.persona_key || '').trim();
+      if (key && CANONICAL_PERSONA_MAP[key]) return CANONICAL_PERSONA_MAP[key];
+      if (key) return key;
+      return 'General Tech';
+    }
+
+    function resetFilters() {
+      document.getElementById('filter-search').value = '';
+      document.getElementById('filter-program').value = 'ALL';
+      document.getElementById('filter-track').value = 'ALL';
+      document.getElementById('filter-persona').value = 'ALL';
+      document.getElementById('filter-retention').value = 'ALL';
+      if (document.getElementById('filter-confidence')) {
+        document.getElementById('filter-confidence').value = 'ALL';
+      }
+      applyFilters();
+    }
+
+    function hasDirectIdentifierMatches(qLower) {
+      if (!qLower || !allLeads || allLeads.length === 0) return false;
+      return allLeads.some(l => {
+        const p = l.person || {};
+        const n = (p.name || '').toLowerCase();
+        const em = (p.email || '').toLowerCase();
+        const id = (l.lead_id || '').toLowerCase();
+        return n.includes(qLower) || em.includes(qLower) || id.includes(qLower);
+      });
+    }
+
+    function applyFilters() {
+      currentPage = 1;
+      const q = document.getElementById('filter-search').value.toLowerCase().trim();
+      const prog = document.getElementById('filter-program').value;
+      const track = document.getElementById('filter-track').value;
+      const persona = document.getElementById('filter-persona').value;
+      const ret = document.getElementById('filter-retention').value;
+      const conf = document.getElementById('filter-confidence') ? document.getElementById('filter-confidence').value : 'ALL';
+
+      const directCandidateSearch = hasDirectIdentifierMatches(q);
+
+      filteredLeads = allLeads.filter(lead => {
+        const p = lead.person || {};
+        const prim = lead.primary || {};
+        const tp = lead.touchpoints || {};
+
+        // Search text
+        if (q) {
+          const nameLower = (p.name || '').toLowerCase();
+          const emailLower = (p.email || '').toLowerCase();
+          const idLower = (lead.lead_id || '').toLowerCase();
+          const isDirectMatch = nameLower.includes(q) || emailLower.includes(q) || idLower.includes(q);
+
+          if (directCandidateSearch) {
+            // When query matches a candidate name, email, or ID, strictly match that candidate
+            // (prevents substring leaks into unrelated roles/companies so searching a name shows ONLY that specific lead!)
+            if (!isDirectMatch) return false;
+          } else {
+            // Fallback for role, company, or event searches (e.g. searching "Google", "Cognizant", or "QA")
+            const roleMatch = (p.role || '').toLowerCase().includes(q);
+            const orgMatch = (p.previous_org || '').toLowerCase().includes(q);
+            const eventMatch = (tp.event_name || '').toLowerCase().includes(q);
+            if (!isDirectMatch && !roleMatch && !orgMatch && !eventMatch) return false;
+          }
+        }
+
+        // Program filter
+        if (prog !== 'ALL') {
+          if (!prim.catalog_code.toLowerCase().includes(prog.toLowerCase())) return false;
+        }
+
+        // Track filter
+        if (track !== 'ALL') {
+          if (!prim.track.toLowerCase().includes(track.toLowerCase())) return false;
+        }
+
+        // Persona filter
+        if (persona !== 'ALL') {
+          const persNorm = (p.normalized_persona || '').toLowerCase().replace(/_/g, '-');
+          const persKey = (p.persona_key || '').toLowerCase().replace(/_/g, '-');
+          const persDomain = (p.role_domain || '').toLowerCase().replace(/_/g, '-');
+          const roleStr = (p.role || '').toLowerCase();
+          const target = persona.toLowerCase().replace(/_/g, '-');
+          if (!persNorm.includes(target) && !persKey.includes(target) && !persDomain.includes(target) && !roleStr.includes(target)) {
+            return false;
+          }
+        }
+
+
+        // Retention filter
+        if (ret !== 'ALL') {
+          const r = prim.retention_rate;
+          if (ret === 'HIGH' && r < 80) return false;
+          if (ret === 'MODERATE' && (r < 75 || r >= 80)) return false;
+          if (ret === 'RISK' && r >= 75) return false;
+        }
+
+        // Confidence filter
+        if (conf !== 'ALL') {
+          const ct = prim.confidence_tier || 'Mid';
+          if (conf === 'HIGH' && ct !== 'High') return false;
+          if (conf === 'MID' && ct !== 'Mid') return false;
+          if (conf === 'LOW' && ct !== 'Low') return false;
+        }
+
+        return true;
+      });
+
+      renderTable();
+    }
+
+    function changePage(delta) {
+      const totalPages = Math.ceil(filteredLeads.length / PAGE_SIZE) || 1;
+      currentPage += delta;
+      if (currentPage < 1) currentPage = 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('leads-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      const displayCountEl = document.getElementById('table-display-count');
+      if (displayCountEl) displayCountEl.innerText = filteredLeads.length;
+
+      // Dynamically check whether ANY lead in the current dataset has an actual Lead ID
+      const hasAnyLeadId = allLeads && allLeads.some(l => l.lead_id && String(l.lead_id).trim() !== '');
+      const thLeadId = document.getElementById('th-lead-id');
+      if (thLeadId) {
+        thLeadId.style.display = hasAnyLeadId ? '' : 'none';
+      }
+
+      const totalPages = Math.ceil(filteredLeads.length / PAGE_SIZE) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const curPageEl = document.getElementById('current-page-display');
+      if (curPageEl) curPageEl.innerText = currentPage;
+      const totPagesEl = document.getElementById('total-pages-display');
+      if (totPagesEl) totPagesEl.innerText = totalPages;
+      const prevBtn = document.getElementById('btn-prev-page');
+      if (prevBtn) prevBtn.disabled = (currentPage <= 1);
+      const nextBtn = document.getElementById('btn-next-page');
+      if (nextBtn) nextBtn.disabled = (currentPage >= totalPages);
+
+      const pagInfoEl = document.getElementById('pagination-info');
+      const tableColSpan = hasAnyLeadId ? 7 : 6;
+      if (filteredLeads.length === 0) {
+        tbody.innerHTML = `<tr class="empty-row"><td colspan="${tableColSpan}">No leads match the current filters.</td></tr>`;
+        if (pagInfoEl) pagInfoEl.innerText = 'Showing 0 of 0 leads';
+        return;
+      }
+
+      const startIdx = (currentPage - 1) * PAGE_SIZE;
+      const endIdx = Math.min(startIdx + PAGE_SIZE, filteredLeads.length);
+      if (pagInfoEl) pagInfoEl.innerText = `Showing ${startIdx + 1} - ${endIdx} of ${filteredLeads.length} leads`;
+
+      const pageLeads = filteredLeads.slice(startIdx, endIdx);
+
+      pageLeads.forEach((lead, idx) => {
+        const p = lead.person || {};
+        const prim = lead.primary || {};
+        const fall = lead.fallback || {};
+        const rate = Number(prim.retention_rate);
+        const rateTone = rate >= 80 ? 'tone-good' : (rate >= 75 ? 'tone-caution' : 'tone-bad');
+        const rowKey = lead._uid || lead.lead_id || (p && p.email) || `row_${idx}`;
+        const tr = document.createElement('tr');
+        tr.title = 'Open candidate dossier';
+        tr.onclick = () => viewLeadDetails(rowKey);
+
+        const expText = p.experience || '';
+        const expUnspecified = /Not Specified|Inferred/.test(expText);
+        const programName = (x) => esc(`${x.catalog_code ? x.catalog_code + ': ' : ''}${String(x.program || '').split('(')[0].trim()}`);
+        const trackName = (x) => esc(String(x.track || 'Standard').split('(')[0].trim());
+
+        const leadIdTd = hasAnyLeadId ? `
+          <td>${lead.lead_id ? `<span class="cell-id">${esc(lead.lead_id)}</span>` : '<span class="cell-sub">-</span>'}${lead._source === 'crm_lookup' ? '<div><span class="source-tag">CRM</span></div>' : ''}</td>` : '';
+
+        tr.innerHTML = `
+          ${leadIdTd}
+          <td>
+            <div class="cell-main">${esc(p.name)}</div>
+            <div class="cell-sub">${esc(p.email)}</div>
+            ${p.education_level === 'BELOW_GRAD' ? '<div class="cell-flag">Ineligible: below graduation</div>' : ''}
+          </td>
+          <td>
+            <div class="cell-main">${esc(p.role || 'Not specified')}</div>
+            ${p.previous_org ? `<div class="cell-sub"><span class="k">Organization</span> ${esc(p.previous_org)}</div>` : ''}
+            ${expText ? `<div class="cell-sub"><span class="k">Experience</span> <span class="${expUnspecified ? 'warn' : ''}">${esc(expUnspecified ? 'Not specified' : expText)}</span></div>` : ''}
+          </td>
+          <td>
+            <div class="cell-main">${programName(prim)}</div>
+            <div class="cell-sub">${trackName(prim)}</div>
+            ${prim.duration ? `<div class="cell-sub">${esc(prim.duration)}</div>` : ''}
+          </td>
+          <td>
+            ${fall && fall.program ? `
+              <div class="cell-main">${programName(fall)}</div>
+              <div class="cell-sub">${trackName(fall)}</div>
+              ${fall.duration ? `<div class="cell-sub">${esc(fall.duration)}</div>` : ''}
+            ` : '<span class="cell-sub">None</span>'}
+          </td>
+          <td>
+            <div class="metric ${rateTone}">${Number.isFinite(rate) ? rate.toFixed(1) + '%' : '-'}</div>
+            <div class="metric-sub" title="${esc(prim.confidence_rationale || '')}">${esc(prim.confidence_tier || 'Mid')} confidence, ${prim.confidence_score !== undefined ? esc(prim.confidence_score) : 70}%</div>
+          </td>
+          <td class="col-action"><button type="button" class="btn-action-view" title="Open candidate dossier">Open</button></td>
+        `;
+        tr.querySelector('.btn-action-view').onclick = (e) => { e.stopPropagation(); viewLeadDetails(rowKey); };
+        tbody.appendChild(tr);
+      });
+    }
+
+    function viewLeadDetails(leadKey) {
+      const lead = allLeads.find(l => (l._uid && l._uid === leadKey) || (l.lead_id && l.lead_id === leadKey) || (l.person && l.person.email === leadKey));
+      if (lead) {
+        activeLeadData = lead;
+        openModalWithLead(lead);
+      }
+    }
+
+    function resolveOfficialProgramUrl(progStr) {
+      if (!progStr) return 'https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/218/970/original/Academy_brochure_2026_%281%29.pdf?1787132291';
+      const s = String(progStr).toLowerCase();
+      if (s.includes('devops') || s.includes('cloud') || s.includes('platform') || s.includes('program 5') || s.includes('p5')) {
+        return 'https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/206/970/original/DEVOPS-Brochure-2026_%281%29.pdf?1782371159';
+      } else if (s.includes('agentic') || s.includes('program 4') || s.includes('p4')) {
+        return 'https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/207/098/original/AI__ML_Agentic_AI_Brochure_.pdf?1782394058';
+      } else if (s.includes('fde') || s.includes('forward deployed') || s.includes('program 3') || s.includes('p3')) {
+        return 'https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/217/310/original/FDE_Brochure_.pdf?1786110990';
+      } else if (s.includes('dsml') || s.includes('data science') || s.includes('program 2') || s.includes('p2')) {
+        return 'https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/210/531/original/DSML_Brochure_2026_%282%29.pdf?1783928557';
+      }
+      return 'https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/218/970/original/Academy_brochure_2026_%281%29.pdf?1787132291';
+    }
+
+    function resolveCareerPathways(progStr, trackStr) {
+      const p = String(progStr || '').toLowerCase();
+      const t = String(trackStr || '').toLowerCase();
+
+      // Program 1: Scaler Academy
+      if (p.includes('academy') || p.includes('software') || p.includes('program 1') || p.includes('p1')) {
+        if (t.includes('advanced') || t.includes('high-level') || t.includes('system design') || t.includes('scalability')) {
+          return {
+            roles: ['Senior SDE (SDE 3)', 'Staff Software Engineer', 'Technical Lead / Tech Lead', 'Distributed Systems Architect', 'Engineering Manager'],
+            salary_range: '₹28 LPA – ₹65+ LPA',
+            transition_summary: 'High-Level System Design (HLD), distributed caching, Kafka event streaming, and architectural leadership for large-scale enterprise microservices.'
+          };
+        } else if (t.includes('intermediate') || t.includes('backend') || t.includes('algorithms') || t.includes('lld') || t.includes('transition')) {
+          return {
+            roles: ['Software Development Engineer II (SDE 2)', 'Backend Microservices Engineer', 'Full-Stack SDE', 'Java / C++ / Go Software Engineer'],
+            salary_range: '₹16 LPA – ₹32 LPA',
+            transition_summary: 'Core product-company transition mastering Advanced DSA, Low-Level Object-Oriented Design (LLD), and scalable backend architectures.'
+          };
+        } else {
+          return {
+            roles: ['Junior Software Engineer (SDE 1)', 'Associate Software Developer', 'Full-Stack Developer', 'Backend Developer'],
+            salary_range: '₹8 LPA – ₹18 LPA',
+            transition_summary: 'Ground-zero algorithmic problem-solving and software development foundations designed for non-tech switchers, freshers, and non-CS graduates.'
+          };
+        }
+      }
+
+      // Program 2: DSML
+      if (p.includes('dsml') || p.includes('data science') || (p.includes('machine learning') && !p.includes('agentic') && !p.includes('p4'))) {
+        if (t.includes('advanced') || t.includes('production ml')) {
+          return {
+            roles: ['Senior Data Scientist', 'Machine Learning Engineer (MLE)', 'MLOps Engineer', 'Computer Vision / NLP Specialist', 'Lead Data Scientist'],
+            salary_range: '₹25 LPA – ₹55+ LPA',
+            transition_summary: 'Deep learning neural architectures, transformer models, enterprise recommendation engines, and production MLOps deployment.'
+          };
+        } else if (t.includes('core') || t.includes('intermediate') || t.includes('applied') || t.includes('analytics & machine')) {
+          return {
+            roles: ['Applied Machine Learning Engineer', 'Data Scientist', 'Statistical Modeler', 'Quantitative Analyst', 'Data Science Consultant'],
+            salary_range: '₹15 LPA – ₹30 LPA',
+            transition_summary: 'Statistical hypothesis testing, applied supervised/unsupervised ML algorithms, and end-to-end data science pipelines.'
+          };
+        } else {
+          return {
+            roles: ['Data Analyst', 'Product Analyst', 'Business Intelligence Engineer (BIE)', 'Growth Analytics Lead', 'Analytics Consultant'],
+            salary_range: '₹8 LPA – ₹20 LPA',
+            transition_summary: 'SQL, Python data manipulation, Tableau dashboards, and business ML modeling translating business domain knowledge into analytical leadership.'
+          };
+        }
+      }
+
+      // Program 3: FDE
+      if (p.includes('fde') || p.includes('forward deployed') || p.includes('program 3') || p.includes('p3')) {
+        return {
+          roles: ['AI Forward Deployed Engineer (FDE)', 'Enterprise AI Solutions Architect', 'Production RAG & LLM Integration Specialist', 'Client AI Systems Engineer', 'Technical AI Engagement Lead'],
+          salary_range: '₹25 LPA – ₹60+ LPA',
+          transition_summary: 'High-impact customer-facing engineering deploying production RAG, vector search, custom fine-tuning, and enterprise autonomous agent workflows.'
+        };
+      }
+
+      // Program 4: AI & ML with Agentic AI
+      if (p.includes('agentic') || p.includes('program 4') || p.includes('p4')) {
+        if (t.includes('beginner') || t.includes('foundation')) {
+          return {
+            roles: ['AI Application Developer', 'Applied AI Solutions Specialist', 'Prompt & Agentic Workflow Engineer'],
+            salary_range: '₹12 LPA – ₹24 LPA',
+            transition_summary: 'Foundational machine learning, AI coding assistants, and prompt-driven autonomous workflow development.'
+          };
+        } else {
+          return {
+            roles: ['Agentic AI Systems Engineer', 'Autonomous Multi-Agent Architect', 'Foundation Model & LLMOps Engineer', 'Generative AI R&D Specialist', 'Deep Learning Architect'],
+            salary_range: '₹28 LPA – ₹70+ LPA',
+            transition_summary: 'Multi-agent swarm orchestration (LangGraph, CrewAI), fine-tuning frontier models, and autonomous tool-calling systems.'
+          };
+        }
+      }
+
+      // Program 5: DevOps, Cloud & AI Platform Engineering
+      if (p.includes('devops') || p.includes('cloud') || p.includes('platform') || p.includes('program 5') || p.includes('p5')) {
+        if (t.includes('sre') || t.includes('reliability') || t.includes('kubernetes')) {
+          return {
+            roles: ['Site Reliability Engineer (SRE)', 'DevSecOps Engineer', 'Kubernetes & Platform Architect', 'MLOps Infrastructure Engineer', 'Principal Cloud Architect'],
+            salary_range: '₹20 LPA – ₹48+ LPA',
+            transition_summary: 'Multi-node Kubernetes clustering, distributed observability (Prometheus/Grafana), DevSecOps governance, and AI infrastructure.'
+          };
+        } else {
+          return {
+            roles: ['Cloud Infrastructure Engineer', 'DevOps Engineer', 'Cloud Automation Specialist', 'AWS / Cloud Platform Engineer'],
+            salary_range: '₹10 LPA – ₹22 LPA',
+            transition_summary: 'Automated CI/CD pipelines, Docker containerization, Infrastructure as Code (Terraform), and enterprise cloud deployments.'
+          };
+        }
+      }
+
+      return {
+        roles: ['Software Engineer', 'Technical Specialist', 'Engineering Lead'],
+        salary_range: '₹12 LPA – ₹30 LPA',
+        transition_summary: 'Industry-aligned technical skill enhancement and high-growth technology career acceleration.'
+      };
+    }
+
+    function populateCareerBox(prefix, careerData) {
+      const elBox = document.getElementById(`${prefix}-career-box`);
+      if (!elBox) return;
+      const hasData = careerData && (careerData.salary_range || (careerData.roles && careerData.roles.length));
+      elBox.style.display = hasData ? '' : 'none';
+      if (!hasData) return;
+      const elSal = document.getElementById(`${prefix}-career-salary`);
+      const elRoles = document.getElementById(`${prefix}-career-roles`);
+      const elDesc = document.getElementById(`${prefix}-career-desc`);
+
+      if (elSal) elSal.innerText = careerData.salary_range || 'Industry Competitive';
+      if (elRoles) {
+        const roles = careerData.roles || [];
+        elRoles.innerHTML = roles.map(r => `<span class="career-role-pill">${r}</span>`).join('');
+      }
+      if (elDesc) {
+        elDesc.innerText = careerData.transition_summary || '';
+      }
+    }
+
+    let currentModalLead = null;
+    let currentCurriculumTab = 'primary';
+
+    function switchCurriculumTab(which) {
+      currentCurriculumTab = which;
+      const btnPrim = document.getElementById('btn-curr-primary');
+      const btnFall = document.getElementById('btn-curr-fallback');
+      if (btnPrim && btnFall) {
+        if (which === 'primary') {
+          btnPrim.classList.add('active');
+          btnFall.classList.remove('active');
+        } else {
+          btnFall.classList.add('active');
+          btnPrim.classList.remove('active');
+        }
+      }
+
+      if (!currentModalLead) return;
+      const target = which === 'primary' ? currentModalLead.primary : currentModalLead.fallback;
+      if (!target) return;
+
+      // Synchronize Strategic FAQ & Market Comparison section to target recommended program only
+      const faqKey = resolveFaqProgramKey(target.program || target.catalog_code);
+      switchFaqProgram(faqKey);
+      renderMarketComparison(faqKey);
+      populateRecommendedFaqSelector(currentModalLead, which);
+
+      const elCurrContainer = document.getElementById('curriculum-modules-container');
+      const elCurrTitle = document.getElementById('curriculum-prog-title');
+      const elCurrSub = document.getElementById('curriculum-prog-sub');
+      const elCurrCat = document.getElementById('modal-curriculum-catalogue-link');
+
+      const catUrl = target.catalogue_url || resolveOfficialProgramUrl(target.program || target.catalog_code);
+      if (elCurrCat) elCurrCat.href = catUrl;
+
+      if (elCurrTitle) {
+        const catPrefix = target.catalog_code ? `${target.catalog_code}: ` : '';
+        elCurrTitle.innerText = `${catPrefix}${target.program}: ${target.track}`;
+      }
+      if (elCurrSub) {
+        elCurrSub.innerText = which === 'primary'
+          ? `Outline of the recommended track`
+          : `Outline of the fallback track`;
+      }
+
+      if (elCurrContainer) {
+        let modules = target.curriculum_modules || (target.market_intelligence && target.market_intelligence.curriculum_modules) || [];
+        if (!modules || modules.length === 0) {
+          modules = resolveCurriculumModules(target.program, target.track);
+        }
+        if (modules.length > 0) {
+          elCurrContainer.innerHTML = modules.map(m => `
+              <div class="curriculum-module-card">
+                <div class="curriculum-phase-title">
+                  <div>${m.segment ? `<span class="tag">${esc(m.segment)}</span>` : ''}${m.type ? `<span class="tag">${esc(m.type)}</span>` : ''}<span class="phase">${esc(m.phase)}</span></div>
+                  ${m.duration ? `<span class="curriculum-duration-tag">${esc(m.duration)}</span>` : ''}
+                </div>
+              </div>`).join('');
+        } else {
+          elCurrContainer.innerHTML = `<div class="empty-note">Curriculum details are available in the official brochure.</div>`;
+        }
+      }
+    }
+
+    let currentAvatarGender = 'MALE';
+
+    function guessGenderByName(fullName) {
+      if (!fullName) return 'MALE';
+      const nameClean = fullName.trim().toLowerCase();
+
+      // Honorifics
+      if (nameClean.startsWith('ms.') || nameClean.startsWith('mrs.') || nameClean.startsWith('miss ')) {
+        return 'FEMALE';
+      }
+      if (nameClean.startsWith('mr.')) {
+        return 'MALE';
+      }
+
+      const firstName = nameClean.split(/\s+/)[0].replace(/[^a-z]/g, '');
+
+      const FEMALE_NAMES = new Set([
+        'yamini', 'priya', 'pooja', 'ananya', 'neha', 'sneha', 'shreya', 'divya', 'swati', 'tanvi',
+        'ritu', 'megha', 'kavita', 'deepa', 'sunita', 'anita', 'pallavi', 'riya', 'anjali', 'aayushi',
+        'shruti', 'preeti', 'nisha', 'rashmi', 'aditi', 'simran', 'kriti', 'sonal', 'payal', 'garima',
+        'komal', 'bhavna', 'monika', 'sweta', 'shweta', 'sheetal', 'mansi', 'jyoti', 'rekha', 'seema',
+        'smriti', 'sakshi', 'tanu', 'diksha', 'prerna', 'richa', 'radhika', 'geeta', 'meenakshi', 'arti',
+        'vandana', 'alka', 'aparna', 'madhuri', 'anushka', 'juhi', 'kajal', 'isha', 'ishita',
+        'parul', 'deepika', 'archana', 'sapna', 'sushma', 'alisha', 'natasha', 'sarah', 'emily', 'jessica',
+        'aadhya', 'aarti', 'amrita', 'bhoomika', 'charulata', 'chitra', 'madhavi', 'saumya', 'uma',
+        'lakshmi', 'aisha', 'nandini', 'rashmika', 'harshita', 'ankita', 'tanya', 'pragati', 'khushboo',
+        'kanika', 'shikha', 'shalini', 'shilpa', 'deepali', 'roshni', 'gunjan', 'mona', 'vidya',
+        'varsha', 'surabhi', 'surbhi', 'bhavya', 'urvashi', 'sonali', 'chetna', 'tripti', 'upasana'
+      ]);
+
+      if (FEMALE_NAMES.has(firstName)) {
+        return 'FEMALE';
+      }
+
+      if (nameClean.includes(' kaur') || nameClean.includes(' devi') || nameClean.includes(' kumari') || nameClean.includes(' begum')) {
+        return 'FEMALE';
+      }
+
+      return 'MALE';
+    }
+
+    function updateCandidateAvatar(name) {
+      /* Stock avatars were removed; the dossier shows no guessed imagery. */
+    }
+
+    function openModalWithLead(lead) {
+      currentModalLead = lead;
+      const p = lead.person;
+      const prim = lead.primary;
+      const fall = lead.fallback;
+      const tp = lead.touchpoints || {};
+      const s = lead.sales_script || {};
+
+      document.getElementById('modal-name').innerText = p.name;
+      const modalIdEl = document.getElementById('modal-id');
+      if (modalIdEl) {
+        if (lead.lead_id) {
+          modalIdEl.innerText = lead.lead_id;
+          modalIdEl.style.display = 'inline-block';
+        } else {
+          modalIdEl.innerText = '';
+          modalIdEl.style.display = 'none';
+        }
+      }
+
+      // Update candidate counter and navigation button states
+      const list = (filteredLeads && filteredLeads.length > 0) ? filteredLeads : allLeads;
+      const modalKey = lead._uid || lead.lead_id || (p && p.email);
+      const curIdx = list.findIndex(l => (l._uid || l.lead_id || (l.person && l.person.email)) === modalKey);
+      const counterEl = document.getElementById('modal-candidate-counter');
+      const prevBtn = document.getElementById('modal-btn-prev-candidate');
+      const nextBtn = document.getElementById('modal-btn-next-candidate');
+      const inList = (curIdx !== -1);
+      if (counterEl) counterEl.innerText = inList ? `${curIdx + 1} / ${list.length}` : '';
+      if (prevBtn) { prevBtn.style.display = inList ? '' : 'none'; prevBtn.disabled = (curIdx <= 0); }
+      if (nextBtn) { nextBtn.style.display = inList ? '' : 'none'; nextBtn.disabled = (curIdx >= list.length - 1); }
+
+      const elAcadBadge = document.getElementById('modal-academic-badge');
+      if (elAcadBadge) {
+        const isEligible = lead.academic_eligibility ? lead.academic_eligibility.is_eligible : (p.education_level !== 'BELOW_GRAD');
+        const assumedEdu = (lead.data_quality_flags || []).includes('education_assumed_graduate');
+        let statusText = (lead.academic_eligibility && lead.academic_eligibility.status) || (isEligible ? 'Degree verified' : 'Ineligible (degree prerequisite)');
+        let statusTone = isEligible ? 'good' : 'bad';
+        const inferredEdu = (lead.data_quality_flags || []).includes('education_inferred_from_experience');
+        if (isEligible && assumedEdu) { statusText = 'Graduation assumed, education not in source data'; statusTone = 'caution'; }
+        else if (isEligible && inferredEdu) { statusText = 'Graduation inferred from ' + ((p.education_inferred_from) || 'work history'); statusTone = 'good'; }
+        elAcadBadge.innerText = statusText;
+        elAcadBadge.setAttribute('data-tone', statusTone);
+      }
+
+      const dispPersona = getDisplayPersona(p);
+      const setTile = (id, main, subs, title) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = `<div class="v">${esc(main)}</div>` + (subs || []).filter(Boolean).map((x) => {
+          const t = (typeof x === 'string') ? x : x.text;
+          return `<div class="s${(x && x.warn) ? ' warn' : ''}">${esc(t)}</div>`;
+        }).join('');
+        el.title = (title !== undefined) ? title : String(main);
+      };
+
+      const assumedEduTile = (lead.data_quality_flags || []).includes('education_assumed_graduate');
+      const roleMissing = (p.role_provided === false);
+      const roleUnrecognised = (!roleMissing && p.role_recognized === false);
+      const personaNote = p.persona_inferred_from ? ` (inferred from ${p.persona_inferred_from})` : ((p.persona_basis === 'unknown' && !(lead.person && /Student|Postgraduate/.test(dispPersona))) ? ' (assumed, role not recognised)' : '');
+      setTile('modal-role', roleMissing ? 'Not provided' : (p.role || 'Not specified'), [roleMissing ? { text: 'Role missing in source', warn: true } : (roleUnrecognised ? { text: 'Role not recognised, persona set from other fields', warn: true } : ''), `Persona: ${dispPersona}` + personaNote, (p.role_domain && p.role_domain !== dispPersona) ? `Domain: ${p.role_domain}` : ''], `Role: ${p.role || ''} | Persona: ${dispPersona}`);
+      const orgPlaceholder = ['current organization', 'not applicable account', 'not applicable', 'na', 'n/a', 'organization'].includes(String(p.previous_org || '').trim().toLowerCase());
+      setTile('modal-org', (p.previous_org && !orgPlaceholder) ? p.previous_org : 'Not provided');
+      if (p.experience && /Not Specified|Unspecified|Inferred/.test(p.experience)) {
+        setTile('modal-exp', 'Not specified', [{ text: 'Estimated at 1 to 2 years', warn: true }], p.experience);
+      } else {
+        const gradMatch = /^\s*(?:about\s+)?([\d.]+)\s*yrs?\s*\(Batch\s*(\d{4})\)/i.exec(p.experience || '');
+        const sinceMatch = /^\s*(?:about\s+)?([\d.]+)\s*yrs?\s*\((?:with[^)]*?)?since\s*(\d{4})\)/i.exec(p.experience || '');
+        if (gradMatch) setTile('modal-exp', `About ${gradMatch[1]} yrs since graduation`, [{ text: `Graduated ${gradMatch[2]}. Work experience not provided.`, warn: true }], p.experience);
+        else if (sinceMatch) setTile('modal-exp', `About ${sinceMatch[1]} yrs with this organisation`, [{ text: `Joined ${sinceMatch[2]}. Total experience not provided.`, warn: true }], p.experience);
+        else setTile('modal-exp', p.experience || '-');
+      }
+      const inferredEduTile = (lead.data_quality_flags || []).includes('education_inferred_from_experience');
+      setTile('modal-edu', p.education || 'Not specified', assumedEduTile ? [{ text: 'Assumed. Not in source data.', warn: true }] : (inferredEduTile ? [{ text: 'Inferred from ' + (p.education_inferred_from || 'work history') + '. Not in source data.' }] : []));
+      setTile('modal-company', (p.company_type_provided === false) ? 'Not provided' : (p.company_type || '-'));
+
+      const inbProg = p.enquired_program || 'Not available';
+      setTile('modal-inbound', prettyInterest(inbProg), [], inbProg);
+
+      setTile('modal-tp-event', tp.event_name || '-');
+      const attStr = `${tp.attended || 'Not available'}${tp.duration && tp.duration !== 'N/A' ? ' (' + tp.duration + ')' : ''}`;
+      setTile('modal-tp-attendance', attStr);
+
+      const satText = tp.set_status || tp.sat_status || 'SET not attempted';
+      setTile('modal-tp-sat', satText);
+      const satEl = document.getElementById('modal-tp-sat');
+      if (satEl) {
+        satEl.classList.remove('tone-good', 'tone-caution');
+        if (satText.includes('Passed') || satText.includes('Score:')) satEl.classList.add('tone-good');
+        else if (satText.includes('Attempted') && !satText.includes('Not')) satEl.classList.add('tone-caution');
+      }
+      setTile('modal-tp-channel', tp.channel || 'Not available');
+
+      // Primary
+      const primTitle = prim.catalog_code ? `${prim.catalog_code}: ${prim.program}` : prim.program;
+      document.getElementById('modal-primary-prog').innerText = primTitle;
+      document.getElementById('modal-primary-track').innerText = prim.track || '';
+      document.getElementById('modal-primary-why').innerHTML = `<b>Why this program.</b> ${safeHtml(prim.why)}`;
+
+      const setConfidence = (id, tier, score, rationale, label) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerText = label || `${tier} confidence, ${score}%`;
+        el.title = rationale || '';
+        el.setAttribute('data-tone', tier === 'High' ? 'good' : (tier === 'Mid' ? 'caution' : 'bad'));
+      };
+      const setStats = (id, x) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const pct = (v) => (v === undefined || v === null || isNaN(Number(v))) ? '-' : Number(v).toFixed(1) + '%';
+        const r = Number(x.retention_rate);
+        const tone = r >= 80 ? 'tone-good' : (r >= 75 ? 'tone-caution' : 'tone-bad');
+        const d = x.cohort_detail;
+        if (d) {
+          const exactNote = d.exact_available < 30 ? `<div class="rec-stat-note">${esc(d.exact_available)} exact matches</div>` : `<div class="rec-stat-note" style="color:var(--ink-4)">${esc(d.exact_available)} exact matches</div>`;
+          el.innerHTML = `
+          <div><div class="rec-stat-label">Retention</div><div class="rec-stat-val ${isNaN(r) ? '' : tone}">${pct(x.retention_rate)}</div></div>
+          <div><div class="rec-stat-label">Refund</div><div class="rec-stat-val">${pct(x.refund_rate)}</div><div class="rec-stat-note" style="color:var(--ink-4)">${esc(d.refunds)} of ${esc(d.n)} learners</div></div>
+          <div><div class="rec-stat-label">Matched learners</div><div class="rec-stat-val">${esc(d.n)}</div>${exactNote}</div>`;
+          el.title = 'Observed refunds among the ' + d.n + ' most similar past learners. Matched on: ' + d.basis + '. Cohorts ' + d.oldest_cohort + ' to ' + d.newest_cohort + '.';
+          return;
+        }
+        el.innerHTML = `
+          <div><div class="rec-stat-label">Retention</div><div class="rec-stat-val ${isNaN(r) ? '' : tone}">${pct(x.retention_rate)}</div></div>
+          <div><div class="rec-stat-label">Refund</div><div class="rec-stat-val">${pct(x.refund_rate)}</div></div>
+          <div><div class="rec-stat-label">Cohort size</div><div class="rec-stat-val">${x.cohort_size != null ? Number(x.cohort_size).toLocaleString() : '-'}</div>${(x.cohort_size != null && Number(x.cohort_size) < 30) ? '<div class="rec-stat-note">Low sample</div>' : ''}</div>`;
+      };
+      setConfidence('modal-primary-confidence', prim.confidence_tier || 'Mid', prim.confidence_score !== undefined ? prim.confidence_score : 75, prim.confidence_rationale, prim.confidence_label);
+
+      // Fallback
+      const fallTitle = fall.catalog_code ? `${fall.catalog_code}: ${fall.program}` : fall.program;
+      document.getElementById('modal-fallback-prog').innerText = fallTitle;
+      document.getElementById('modal-fallback-track').innerText = fall.track || '';
+      document.getElementById('modal-fallback-why').innerHTML = `<b>Why this fallback.</b> ${safeHtml(fall.why)}`;
+
+      setConfidence('modal-fallback-confidence', fall.confidence_tier || 'Mid', fall.confidence_score !== undefined ? fall.confidence_score : 65, fall.confidence_rationale, fall.confidence_label);
+
+      // Also consider: a third, lighter suggestion, only when the model gives it a real chance
+      const alsoEl = document.getElementById('modal-also-consider');
+      if (alsoEl) {
+        const ac = lead.also_consider;
+        if (ac && ac.program) {
+          alsoEl.hidden = false;
+          alsoEl.innerHTML = `<div class="rec-also-label">${esc(ac.label || 'Also consider')}</div><div class="rec-also-prog">${esc(ac.program)}</div>` +
+            `<div class="rec-also-note">${esc(ac.reason || '')}${ac.program_refund_rate != null ? ' Of learners who bought it, ' + esc(String(ac.program_refund_rate)) + '% refunded, about ' + esc(String(Math.round(ac.program_refund_rate))) + ' in every 100.' : ''}</div>`;
+        } else { alsoEl.hidden = true; alsoEl.innerHTML = ''; }
+      }
+
+      // Populate Target Career Outcomes & Real-World Job Roles
+      const primCareer = prim.career_options || (prim.market_intelligence && prim.market_intelligence.career_options) || resolveCareerPathways(prim.program, prim.track);
+      populateCareerBox('modal-primary', primCareer);
+
+      const fallCareer = fall.career_options || (fall.market_intelligence && fall.market_intelligence.career_options) || resolveCareerPathways(fall.program, fall.track);
+      populateCareerBox('modal-fallback', fallCareer);
+
+      // Program Official Catalogue & Syllabus Links
+      const mkt = prim.market_intelligence || lead.market_intelligence || {};
+      const primCatUrl = prim.catalogue_url || resolveOfficialProgramUrl(prim.program || prim.catalog_code);
+      const fallCatUrl = fall.catalogue_url || resolveOfficialProgramUrl(fall.program || fall.catalog_code);
+
+      // Set catalogue anchor links
+      const elPrimCat = document.getElementById('modal-primary-catalogue');
+      if (elPrimCat) elPrimCat.href = primCatUrl;
+      const elFallCat = document.getElementById('modal-fallback-catalogue');
+      if (elFallCat) elFallCat.href = fallCatUrl;
+      const elCurrCat = document.getElementById('modal-curriculum-catalogue-link');
+      if (elCurrCat) elCurrCat.href = primCatUrl;
+
+      // Hiring Companies
+      const elCompList = document.getElementById('mkt-companies-list');
+      if (elCompList) {
+        const comps = mkt.top_hiring_companies || ['Amazon', 'Microsoft', 'Google', 'PayPal', 'Razorpay', 'Swiggy', 'Walmart', 'PhonePe'];
+        elCompList.innerHTML = comps.map(c => `<span class="company-pill">${c}</span>`).join('');
+      }
+
+      // Render Curriculum for Recommended Track
+      switchCurriculumTab('primary');
+
+      try {
+        sessionStorage.setItem('scaler_active_lead_id', lead._uid || lead.lead_id || (p && p.email) || '');
+        sessionStorage.setItem('scaler_active_lead_json', JSON.stringify(lead));
+      } catch (e) {}
+
+      document.getElementById('lead-modal').classList.add('active');
+    }
+
+    function renderFactorBars(containerId, bk) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      const factors = [
+        { name: 'Cohort Sample Size (N)', pts: bk.cohort_pts !== undefined ? bk.cohort_pts : 0, max: bk.cohort_max || 35, desc: bk.cohort_desc || '', colorClass: 'factor-fill-blue' },
+        { name: 'Track Retention Rate', pts: bk.ret_pts !== undefined ? bk.ret_pts : 0, max: bk.ret_max || 25, desc: bk.ret_desc || '', colorClass: 'factor-fill-green' },
+        { name: 'Inbound Intent Synergy', pts: bk.intent_pts !== undefined ? bk.intent_pts : 0, max: bk.intent_max || 25, desc: bk.intent_desc || '', colorClass: 'factor-fill-purple' },
+        { name: 'Diagnostic SET & Degree', pts: bk.apt_pts !== undefined ? bk.apt_pts : 0, max: bk.apt_max || 15, desc: bk.apt_desc || '', colorClass: 'factor-fill-amber' }
+      ];
+
+      container.innerHTML = factors.map(f => {
+        const pct = Math.min(100, Math.max(0, Math.round((f.pts / (f.max || 1)) * 100)));
+        return `
+          <div class="factor-bar-row">
+            <div class="factor-bar-labels">
+              <span><b>${f.name}</b> <span style="font-size:9.5px; color:var(--text-muted); font-weight:500;">(${f.desc})</span></span>
+              <span><b style="color:var(--text-heading);">${f.pts}</b> / ${f.max} pts</span>
+            </div>
+            <div class="factor-bar-track">
+              <div class="factor-bar-fill ${f.colorClass}" style="width: ${pct}%;"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function closeModal() {
+      try {
+        sessionStorage.removeItem('scaler_active_lead_id');
+        sessionStorage.removeItem('scaler_active_lead_json');
+      } catch (e) {}
+      document.getElementById('lead-modal').classList.remove('active');
+      if (typeof currentView !== 'undefined' && currentView === 'upload') {
+        const input = document.getElementById('home-live-search-input');
+        const emailPanel = document.getElementById('mode-content-email');
+        const liveMsg = document.getElementById('live-search-status-msg');
+        if (liveMsg) { liveMsg.style.display = 'none'; liveMsg.innerHTML = ''; }
+        if (input && emailPanel && emailPanel.style.display !== 'none') { input.focus(); input.select(); }
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      const modal = document.getElementById('lead-modal');
+      const isModalActive = modal && modal.classList.contains('active');
+      if (e.key === 'Escape') closeModal();
+      if (isModalActive && e.key === 'ArrowLeft') navigateCandidate(-1);
+      if (isModalActive && e.key === 'ArrowRight') navigateCandidate(1);
+    });
+
+    function handleOverlayClick(event) {
+      if (event.target.id === 'lead-modal') {
+        closeModal();
+      }
+    }
+
+    function switchEvaluationMode(mode) {
+      const isCsv = (mode === 'csv');
+      const email = document.getElementById('mode-content-email');
+      const csv = document.getElementById('mode-content-csv');
+      const tabEmail = document.getElementById('tab-mode-email');
+      const tabCsv = document.getElementById('tab-mode-csv');
+      if (email) email.style.display = isCsv ? 'none' : 'block';
+      if (csv) csv.style.display = isCsv ? 'block' : 'none';
+      if (tabEmail) { tabEmail.classList.toggle('active', !isCsv); tabEmail.setAttribute('aria-selected', String(!isCsv)); }
+      if (tabCsv) { tabCsv.classList.toggle('active', isCsv); tabCsv.setAttribute('aria-selected', String(isCsv)); }
+      try { sessionStorage.setItem('scaler_home_mode', isCsv ? 'csv' : 'email'); } catch (e) {}
+      if (!isCsv) {
+        const input = document.getElementById('home-live-search-input');
+        if (input) input.focus();
+      }
+    }
+
+    async function handleLiveLeadSearch() {
+      const inputEl = document.getElementById('home-live-search-input');
+      const q = inputEl ? inputEl.value.trim() : '';
+      const msgEl = document.getElementById('live-search-status-msg');
+      const fetchBtn = document.querySelector('#mode-content-email button[onclick="handleLiveLeadSearch()"]');
+      if (!q) {
+        if (msgEl) {
+          msgEl.className = 'msg error';
+          msgEl.innerText = 'Enter an email address, phone number or name.';
+          msgEl.style.display = 'block';
+        }
+        return;
+      }
+
+      // Show loading state
+      if (msgEl) {
+        msgEl.className = 'msg info';
+        msgEl.innerHTML = '<span class="live-search-spinner"></span>Querying Marketing MIS and evaluating the lead';
+        msgEl.style.display = 'block';
+      }
+      if (fetchBtn) {
+        fetchBtn.disabled = true;
+        fetchBtn.innerHTML = '<span class="live-search-spinner"></span>Fetching';
+      }
+
+      // Query Marketing MIS directly (strictly isolated from uploaded bulk CSV leads)
+      try {
+        const resp = await fetch('/api/lookup?q=' + encodeURIComponent(q) + '&scope=mis');
+        const data = await resp.json();
+
+        if (data && data.status === 'success' && data.lead) {
+          const lead = data.lead;
+          const personName = lead.person ? lead.person.name : 'Candidate';
+          const srcLabel = data.source === 'metabase_live' ? 'Marketing MIS (Live)' : 'Marketing MIS / CRM';
+
+          if (msgEl) {
+            msgEl.className = 'msg ok';
+            msgEl.innerHTML = `Found in <b>${esc(srcLabel)}</b>: <b>${esc(personName)}</b>. Opening dossier.`;
+            msgEl.style.display = 'block';
+          }
+
+          setTimeout(() => { openModalWithLead(lead); }, 250);
+        } else if (data && data.status === 'unavailable') {
+          if (msgEl) {
+            msgEl.className = 'msg error';
+            msgEl.innerHTML = `Metabase did not respond for "<b>${esc(q)}</b>", so we cannot tell whether the lead exists.<span class="msg-sub">Please try again. The first search of a lead can be slow.</span>`;
+            msgEl.style.display = 'block';
+          }
+        } else {
+          if (msgEl) {
+            msgEl.className = 'msg error';
+            msgEl.innerHTML = `No record found in Marketing MIS for "<b>${esc(q)}</b>".<span class="msg-sub">To search leads you uploaded, use the filters on the results page.</span>`;
+            msgEl.style.display = 'block';
+          }
+        }
+      } catch (err) {
+        if (msgEl) {
+          msgEl.className = 'msg error';
+          msgEl.innerText = 'Network error fetching lead from Marketing MIS: ' + err.message;
+          msgEl.style.display = 'block';
+        }
+      } finally {
+        if (fetchBtn) {
+          fetchBtn.disabled = false;
+          fetchBtn.innerHTML = 'Fetch and evaluate';
+        }
+      }
+    }
+
+    async function executeCrmLookup() {
+      const q = document.getElementById('nav-crm-search-input').value.trim();
+      if (!q) {
+        notify('Please enter an email, phone number, name, or Lead ID to search in your CRM / Marketing MIS.');
+        return;
+      }
+      const qLower = q.toLowerCase();
+
+      // Check local loaded leads first
+      const localMatches = allLeads.filter(l => {
+        const p = l.person || {};
+        const n = (p.name || '').toLowerCase();
+        const em = (p.email || '').toLowerCase();
+        const id = (l.lead_id || '').toLowerCase();
+        const ph = (p.phone || '');
+        return n.includes(qLower) || em.includes(qLower) || id.includes(qLower) || ph.includes(q);
+      });
+
+      if (localMatches.length > 0) {
+        activeLeadData = localMatches[0];
+        openModalWithLead(localMatches[0]);
+        return;
+      }
+
+      // Query server & Marketing MIS on the fly
+      try {
+        const resp = await fetch('/api/lookup?q=' + encodeURIComponent(q));
+        const data = await resp.json();
+
+        if (data && data.status === 'success' && data.lead) {
+          openModalWithLead(data.lead);
+        } else {
+          notify(`No lead found in Marketing MIS or CRM matching "${q}".`);
+        }
+      } catch (err) {
+        notify('Error looking up lead: ' + err.message);
+      }
+    }
+
+    async function exportActiveLeads(format) {
+      const ext = (format === 'xlsx' || format === 'excel') ? 'xlsx' : 'csv';
+      const timestamp = new Date().toISOString().slice(0, 10);
+      const filename = `scaler_evaluated_leads_${timestamp}.${ext}`;
+
+      // Check if specific filter search is currently applied on the table
+      const searchVal = document.getElementById('filter-search')?.value?.trim();
+      const progFilter = document.getElementById('filter-program')?.value;
+      const fitFilter = document.getElementById('filter-fit')?.value;
+      const hasActiveFilters = Boolean(searchVal || (progFilter && progFilter !== 'all') || (fitFilter && fitFilter !== 'all'));
+
+      try {
+        let resp;
+        // If user actively filtered down to a subset, post the filtered subset
+        if (hasActiveFilters && filteredLeads && filteredLeads.length > 0 && filteredLeads.length < (totalServerLeadsCount || allLeads.length)) {
+          const compactPayload = filteredLeads.map(l => ({
+            lead_id: l.lead_id,
+            person: l.person,
+            primary: l.primary,
+            fallback: l.fallback,
+            touchpoints: l.touchpoints,
+            sales_script: l.sales_script,
+            source: l.source,
+            evaluated_at: l.evaluated_at
+          }));
+          resp = await fetch(`/api/export/active?format=${format}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ leads: compactPayload })
+          });
+        } else {
+          // Direct fast stream from database containing all 20,000+ evaluated leads
+          resp = await fetch(`/api/export?format=${format}`);
+        }
+
+        if (!resp.ok) {
+          const errData = await resp.json().catch(() => ({}));
+          throw new Error(errData.detail || `Server returned HTTP ${resp.status}`);
+        }
+
+        const blob = await resp.blob();
+        if (blob.size === 0) {
+          throw new Error('Exported file is empty.');
+        }
+
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+          a.remove();
+        }, 1500);
+      } catch (err) {
+        console.error('Export download failed:', err);
+        notify('Could not download evaluated export: ' + (err.message || String(err)));
+      }
+    }
+
+    function downloadMasterCsv() {
+      exportActiveLeads('csv');
+    }
+
+    function downloadMasterExcel() {
+      exportActiveLeads('xlsx');
+    }
+
+    let totalServerLeadsCount = 0;
+
+    function updateLoadMoreButtonVisibility() {
+      const btn = document.getElementById('btn-load-more');
+      if (!btn) return;
+      if (totalServerLeadsCount > allLeads.length) {
+        btn.style.display = 'inline-flex';
+        const remaining = totalServerLeadsCount - allLeads.length;
+        const nextBatch = Math.min(1000, remaining);
+        btn.innerText = `Load next ${nextBatch.toLocaleString()} leads (${allLeads.length.toLocaleString()} of ${totalServerLeadsCount.toLocaleString()})`;
+      } else {
+        btn.style.display = 'none';
+      }
+    }
+
+    let isStreamingBackground = false;
+
+    async function streamRemainingLeadsInBackground() {
+      if (isStreamingBackground) return;
+      if (!totalServerLeadsCount || allLeads.length >= totalServerLeadsCount) return;
+      isStreamingBackground = true;
+
+      try {
+        while (allLeads.length < totalServerLeadsCount) {
+          const offset = allLeads.length;
+          const resp = await fetch(`/api/leads/more?offset=${offset}&limit=1000`);
+          if (!resp.ok) break;
+          const data = await resp.json();
+          if (!data || data.status !== 'success' || !data.leads || data.leads.length === 0) break;
+
+          const existingIds = new Set(allLeads.map(l => l._uid || l.lead_id || (l.person && l.person.email)));
+          const newUnique = data.leads.filter(l => !existingIds.has(l._uid || l.lead_id || (l.person && l.person.email)));
+          if (newUnique.length === 0) break;
+
+          allLeads = allLeads.concat(newUnique);
+          applyFilters();
+          updateLoadMoreButtonVisibility();
+
+          // Brief delay to keep browser responsive
+          await new Promise(r => setTimeout(r, 80));
+        }
+      } catch (err) {
+        console.warn('Background stream paused:', err);
+      } finally {
+        isStreamingBackground = false;
+        updateLoadMoreButtonVisibility();
+      }
+    }
+
+    async function loadMoreLeadsChunk() {
+      const btn = document.getElementById('btn-load-more');
+      if (!btn) return;
+      const origText = btn.innerText;
+      btn.innerText = 'Loading';
+      btn.disabled = true;
+
+      try {
+        const offset = allLeads.length;
+        const resp = await fetch(`/api/leads/more?offset=${offset}&limit=1000`);
+        if (!resp.ok) throw new Error('Failed to fetch next leads chunk');
+        const data = await resp.json();
+
+        if (data.status === 'success' && data.leads && data.leads.length > 0) {
+          totalServerLeadsCount = data.total || totalServerLeadsCount;
+          // Append new leads avoiding duplicates
+          const existingIds = new Set(allLeads.map(l => l._uid || l.lead_id || (l.person && l.person.email)));
+          const newUnique = data.leads.filter(l => !existingIds.has(l._uid || l.lead_id || (l.person && l.person.email)));
+          allLeads = allLeads.concat(newUnique);
+          applyFilters();
+          
+          const tblTotal = document.getElementById('table-total-count');
+          if (tblTotal) tblTotal.innerText = (totalServerLeadsCount || allLeads.length).toLocaleString();
+        }
+      } catch (err) {
+        notify('Could not load next leads batch: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        updateLoadMoreButtonVisibility();
+      }
+    }
+  </script>
+</body>
+
+</html>

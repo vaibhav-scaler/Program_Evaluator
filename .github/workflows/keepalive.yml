@@ -1,0 +1,20 @@
+name: Health check
+
+# Manual health check. Railway keeps the service running, so no schedule is needed.
+# Set the repository variable APP_HEALTH_URL (Settings > Secrets and variables > Actions > Variables)
+# to the service's /health address before running this.
+on:
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the health endpoint
+        env:
+          URL: ${{ vars.APP_HEALTH_URL }}
+        run: |
+          if [ -z "$URL" ]; then echo "::error::Set the APP_HEALTH_URL repository variable first"; exit 1; fi
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 "$URL" || echo "000")
+          echo "HTTP $STATUS"
+          [ "$STATUS" = "200" ]

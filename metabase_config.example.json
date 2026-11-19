@@ -1,0 +1,11 @@
+{
+  "metabase_url": "https://metabase.example.com",
+  "card_id": "",
+  "email_parameter_id": "",
+  "username": "",
+  "password": "",
+  "api_key": "",
+  "session_token": "",
+  "public_uuid": "",
+  "timeout_seconds": 30
+}
